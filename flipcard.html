@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>椰椰电竞 - 翻翻乐</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Orbitron", "Microsoft YaHei", Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 50%, #0f1420 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .bg-image {
+            width: 100%;
+            max-width: 1400px;
+            height: auto;
+            display: block;
+            margin: 0 auto 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+        }
+
+        .container {
+            background: linear-gradient(145deg, rgba(20, 25, 45, 0.95), rgba(15, 20, 35, 0.98));
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 
+                0 0 60px rgba(0, 255, 255, 0.2),
+                0 0 100px rgba(255, 165, 0, 0.1),
+                inset 0 0 80px rgba(0, 0, 0, 0.3);
+            max-width: 1400px;
+            width: 100%;
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 42px;
+            font-weight: 900;
+            background: linear-gradient(90deg, #00ffff, #00d4ff, #ffa500, #00ffff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+            animation: titleGlow 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.8));
+        }
+
+        @keyframes titleGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.8)) brightness(1);
+            }
+            50% {
+                filter: drop-shadow(0 0 20px rgba(0, 255, 255, 1)) brightness(1.2);
+            }
+        }
+
+        .subtitle {
+            font-size: 24px;
+            color: #00ffff;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+            letter-spacing: 2px;
+        }
+
+        /* 开始界面 */
+        .start-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .start-screen h2 {
+            font-size: 32px;
+            color: #00ffff;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+            letter-spacing: 2px;
+            font-weight: 900;
+        }
+
+        .difficulty-options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .difficulty-card {
+            background: linear-gradient(145deg, rgba(0, 60, 80, 0.3), rgba(0, 40, 60, 0.4));
+            border: 2px solid #00ffff;
+            border-radius: 15px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 250px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 0 20px rgba(0, 255, 255, 0.3),
+                inset 0 0 20px rgba(0, 255, 255, 0.05);
+        }
+
+        .difficulty-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+        }
+
+        .difficulty-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 
+                0 8px 40px rgba(0, 255, 255, 0.6),
+                0 0 50px rgba(255, 165, 0, 0.3),
+                inset 0 0 30px rgba(0, 255, 255, 0.1);
+            border-color: #ffa500;
+        }
+
+        .difficulty-card:hover::before {
+            left: 100%;
+        }
+
+        .difficulty-name {
+            font-size: 24px;
+            color: #00ffff;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .difficulty-info {
+            color: #a0d0e0;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .difficulty-base {
+            font-size: 20px;
+            color: #ffa500;
+            font-weight: bold;
+            margin-top: 15px;
+            text-shadow: 0 0 10px rgba(255, 165, 0, 0.8);
+        }
+
+        /* 游戏界面 */
+        .game-screen {
+            display: none;
+        }
+
+        .game-layout {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .game-main {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .game-board {
+            display: grid;
+            gap: 10px;
+            margin: 0 auto;
+            max-width: 800px;
+            background: linear-gradient(145deg, rgba(10, 15, 30, 0.8), rgba(5, 10, 20, 0.9));
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 
+                0 0 30px rgba(0, 255, 255, 0.2),
+                inset 0 0 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .card {
+            aspect-ratio: 1;
+            background: linear-gradient(145deg, rgba(0, 80, 100, 0.4), rgba(0, 60, 80, 0.5));
+            border: 2px solid rgba(0, 255, 255, 0.6);
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            transition: all 0.5s;
+            position: relative;
+            box-shadow: 
+                0 0 15px rgba(0, 255, 255, 0.4),
+                inset 0 0 20px rgba(0, 255, 255, 0.1);
+            transform-style: preserve-3d;
+        }
+
+        .card .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00ffff;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+            backface-visibility: hidden;
+        }
+
+        .card .card-front {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .card .card-front img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+
+        .card.flipped {
+            background: linear-gradient(145deg, rgba(0, 255, 255, 0.2), rgba(0, 200, 255, 0.3));
+            border-color: #ffa500;
+            box-shadow: 
+                0 0 25px rgba(255, 165, 0, 0.8),
+                inset 0 0 30px rgba(255, 165, 0, 0.2);
+        }
+
+        .card.flipped .card-back {
+            display: none;
+        }
+
+        .card.flipped .card-front {
+            display: flex;
+        }
+
+        .card.matched {
+            background: linear-gradient(145deg, rgba(0, 255, 150, 0.2), rgba(0, 200, 100, 0.3));
+            border-color: #00ff88;
+            cursor: default;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+        }
+
+        .card.matched .card-back {
+            display: none;
+        }
+
+        .card.matched .card-front {
+            display: flex;
+        }
+
+        .card:hover:not(.flipped):not(.matched) {
+            transform: scale(0.95);
+            box-shadow: 
+                0 0 25px rgba(0, 255, 255, 0.8),
+                inset 0 0 30px rgba(0, 255, 255, 0.2);
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            flex: 0 0 350px;
+            min-width: 300px;
+        }
+
+        .stats-panel, .tips-panel, .base-panel {
+            background: linear-gradient(145deg, rgba(0, 60, 80, 0.3), rgba(0, 40, 60, 0.4));
+            border: 2px solid rgba(0, 255, 255, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 
+                0 0 25px rgba(0, 255, 255, 0.2),
+                inset 0 0 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .panel-title {
+            color: #ffa500;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(255, 165, 0, 0.8);
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 16px;
+            color: #00ffff;
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+        }
+
+        .stat-value {
+            color: #ffa500;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 165, 0, 0.8);
+        }
+
+        .base-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .base-action-btn {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(0, 200, 255, 0.3));
+            color: #00ffff;
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+            width: 100%;
+        }
+
+        .base-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 25px rgba(0, 255, 255, 0.6);
+            border-color: #ffa500;
+            color: #ffa500;
+        }
+
+        .base-action-btn.increase:hover {
+            border-color: #00ff88;
+            color: #00ff88;
+            box-shadow: 0 5px 25px rgba(0, 255, 136, 0.6);
+        }
+
+        .base-action-btn.decrease:hover {
+            border-color: #ff4500;
+            color: #ff4500;
+            box-shadow: 0 5px 25px rgba(255, 69, 0, 0.6);
+        }
+
+        .base-action-btn.history {
+            background: linear-gradient(135deg, rgba(255, 165, 0, 0.2), rgba(255, 140, 0, 0.3));
+            border-color: #ffa500;
+            color: #ffa500;
+        }
+
+        /* 弹窗样式 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, rgba(20, 25, 45, 0.98), rgba(15, 20, 35, 1));
+            border: 2px solid rgba(0, 255, 255, 0.5);
+            border-radius: 15px;
+            padding: 0;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 
+                0 0 60px rgba(0, 255, 255, 0.3),
+                0 0 100px rgba(255, 165, 0, 0.2);
+            animation: modalFadeIn 0.3s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            color: #00ffff;
+            font-size: 22px;
+            margin: 0;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #ff4500;
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.3s;
+            line-height: 1;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+        }
+
+        .modal-close:hover {
+            color: #ff6347;
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .modal-input {
+            background: linear-gradient(145deg, rgba(0, 60, 80, 0.3), rgba(0, 40, 60, 0.4));
+            border: 2px solid rgba(0, 255, 255, 0.6);
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ffff;
+            text-align: center;
+            width: 100%;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+            font-family: "Orbitron", "Microsoft YaHei", Arial, sans-serif;
+        }
+
+        .modal-input::placeholder {
+            color: rgba(0, 255, 255, 0.5);
+        }
+
+        .modal-input:focus {
+            outline: none;
+            border-color: #ffa500;
+            box-shadow: 0 0 25px rgba(255, 165, 0, 0.6);
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid rgba(0, 255, 255, 0.3);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .history-item {
+            padding: 12px;
+            margin-bottom: 10px;
+            background: rgba(0, 40, 60, 0.3);
+            border-radius: 8px;
+            border-left: 3px solid;
+        }
+
+        .history-item.increase {
+            border-left-color: #00ff88;
+        }
+
+        .history-item.decrease {
+            border-left-color: #ff4500;
+        }
+
+        .history-change {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .history-change.increase {
+            color: #00ff88;
+        }
+
+        .history-change.decrease {
+            color: #ff4500;
+        }
+
+        .history-time {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .history-result {
+            color: #a0d0e0;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .tips-panel ul {
+            list-style: none;
+            color: #a0d0e0;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .tips-panel li {
+            margin-bottom: 8px;
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .tips-panel li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #00ffff;
+        }
+
+        .tips-note {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0, 255, 255, 0.3);
+            font-size: 12px;
+            color: #888;
+            line-height: 1.6;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(0, 200, 255, 0.3));
+            color: #00ffff;
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 5px;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 5px 25px rgba(0, 255, 255, 0.6),
+                0 0 35px rgba(0, 255, 255, 0.4);
+            border-color: #ffa500;
+            color: #ffa500;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, rgba(255, 165, 0, 0.2), rgba(255, 140, 0, 0.3));
+            border-color: #ffa500;
+            color: #ffa500;
+            box-shadow: 0 0 20px rgba(255, 165, 0, 0.3);
+        }
+
+        .btn-secondary:hover {
+            border-color: #00ffff;
+            color: #00ffff;
+            box-shadow: 0 5px 25px rgba(255, 165, 0, 0.6);
+        }
+
+        .button-group {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .result-message {
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: bold;
+            display: none;
+            background: linear-gradient(135deg, rgba(0, 255, 150, 0.2), rgba(0, 200, 100, 0.3));
+            color: #00ff88;
+            border: 2px solid #00ff88;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+            animation: messageGlow 1s ease-in-out infinite;
+        }
+
+        .result-message.show {
+            display: block;
+        }
+
+        @keyframes messageGlow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .bg-image {
+                max-width: 100%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .bg-image {
+                margin-bottom: 15px;
+                border-radius: 5px;
+            }
+            
+            .title {
+                font-size: 28px;
+            }
+
+            .subtitle {
+                font-size: 18px;
+            }
+
+            .difficulty-options {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .game-layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                flex: 1;
+                width: 100%;
+            }
+
+            .card {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <img src="beijingtu.jpg" alt="椰椰电竞" class="bg-image">
+    <div class="container">
+        <div class="header">
+            <div class="title">椰椰电竞</div>
+            <div class="subtitle">翻翻乐</div>
+        </div>
+
+        <!-- 开始界面 -->
+        <div class="start-screen" id="startScreen">
+            <h2>🎴 选择游戏难度 🎴</h2>
+            
+            <!-- 导入数据按钮 -->
+            <div style="text-align: center; margin-bottom: 20px;">
+                <button class="btn btn-secondary" onclick="location.href='home.html'" style="font-size: 14px; padding: 10px 20px; margin-right: 10px;">
+                    🏠 返回游戏合集
+                </button>
+                <button class="btn" onclick="importData()" style="font-size: 14px; padding: 10px 20px;">
+                    📂 导入存档继续游戏
+                </button>
+            </div>
+            
+            <div class="difficulty-options">
+                <div class="difficulty-card" onclick="startGame('easy')">
+                    <div class="difficulty-name">🟢 简单版</div>
+                    <div class="difficulty-info">
+                        网格：4 × 5<br>
+                        共 20 张牌<br>
+                        编号：1288
+                    </div>
+                    <div class="difficulty-base">保底：3688W</div>
+                </div>
+
+                <div class="difficulty-card" onclick="startGame('medium')">
+                    <div class="difficulty-name">🟡 中等版</div>
+                    <div class="difficulty-info">
+                        网格：5 × 6<br>
+                        共 30 张牌<br>
+                        编号：2388
+                    </div>
+                    <div class="difficulty-base">保底：6688W</div>
+                </div>
+
+                <div class="difficulty-card" onclick="startGame('hard')">
+                    <div class="difficulty-name">🔴 困难版</div>
+                    <div class="difficulty-info">
+                        网格：5 × 10<br>
+                        共 50 张牌<br>
+                        编号：5588
+                    </div>
+                    <div class="difficulty-base">保底：16688W</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 游戏界面 -->
+        <div class="game-screen" id="gameScreen">
+            <div class="result-message" id="resultMessage"></div>
+
+            <div class="game-layout">
+                <div class="game-main">
+                    <div class="game-board" id="gameBoard"></div>
+                    <div class="button-group">
+                        <button class="btn" onclick="resetGame()">🔄 重新开始</button>
+                        <button class="btn btn-secondary" onclick="backToStart()">🏠 返回首页</button>
+                        <button class="btn" onclick="exportData()">💾 导出数据</button>
+                    </div>
+                </div>
+
+                <div class="sidebar">
+                    <!-- 统计面板 -->
+                    <div class="stats-panel">
+                        <div class="panel-title">📊 游戏统计</div>
+                        <div class="stat-item">
+                            <span>⏱️ 游戏时间:</span>
+                            <span class="stat-value" id="gameTime">00:00:00</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>🔄 翻牌次数:</span>
+                            <span class="stat-value" id="flipCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>✅ 配对数:</span>
+                            <span class="stat-value" id="matchCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>📦 总牌数:</span>
+                            <span class="stat-value" id="totalPairs">0</span>
+                        </div>
+                    </div>
+
+                    <!-- 保底控制面板 -->
+                    <div class="base-panel">
+                        <div class="panel-title">💰 保底管理</div>
+                        <div class="stat-item" style="margin-bottom: 15px; justify-content: center;">
+                            <span style="color: #ffa500; font-size: 20px;">
+                                当前保底: <span id="baseAmount" style="font-size: 26px; font-weight: 900;">0W</span>
+                            </span>
+                        </div>
+                        <div class="base-control" style="flex-direction: column; gap: 10px;">
+                            <button class="base-action-btn increase" onclick="showBaseInput('increase')">
+                                ➕ 增加保底
+                            </button>
+                            <button class="base-action-btn decrease" onclick="showBaseInput('decrease')">
+                                ➖ 减少保底
+                            </button>
+                            <button class="base-action-btn history" onclick="showBaseHistory()">
+                                📝 查看记录
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 提示面板 -->
+                    <div class="tips-panel">
+                        <div class="panel-title">💡 翻牌提示</div>
+                        <ul>
+                            <li><strong style="color: #ffa500;">小红</strong>：翻 1 次（50万-100万）</li>
+                            <li><strong style="color: #ff6b6b;">大红</strong>：翻 2 次（100万-200万）</li>
+                            <li><strong style="color: #ff4500;">大大红</strong>：翻 3 次（200万+/稀有）</li>
+                            <li><strong style="color: #00ffff;">非心/复苏</strong>：翻 6 次</li>
+                            <li><strong style="color: #00d4ff;">海洋之泪</strong>：翻 10 次</li>
+                        </ul>
+                        <div class="tips-note">
+                            <strong>注:</strong><br>
+                            一次为翻两张牌。<br>
+                            小红为50万的卡及100万以下的红。<br>
+                            大红为100万以上的卡和红。<br>
+                            大大红为200万以上价值的红和卡/炫彩克小圈/阿米娅等稀有的红。<br>
+                            六套、红头修、红甲修不算红。<br>
+                            撤离失败带出的红不算。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="fileInput" style="display: none;" accept=".json">
+
+    <!-- 保底输入弹窗 -->
+    <div id="baseInputModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">增加保底</h3>
+                <button class="modal-close" onclick="closeBaseInput()">✕</button>
+            </div>
+            <div class="modal-body">
+                <p style="color: #a0d0e0; margin-bottom: 15px;">
+                    当前保底: <span style="color: #ffa500; font-weight: bold;" id="modalCurrentBase">0W</span>
+                </p>
+                <input type="number" id="modalInput" class="modal-input" placeholder="输入金额" step="100" min="0">
+                <p style="color: #888; font-size: 12px; margin-top: 10px;">
+                    输入要<span id="modalAction">增加</span>的金额数值
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeBaseInput()">取消</button>
+                <button class="btn" onclick="confirmBaseChange()">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 变动记录弹窗 -->
+    <div id="historyModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📝 保底变动记录</h3>
+                <button class="modal-close" onclick="closeHistoryModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div id="modalHistoryList" style="max-height: 400px; overflow-y: auto;"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeHistoryModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            difficulty: '',
+            rows: 0,
+            cols: 0,
+            totalCards: 0,
+            cards: [],
+            flippedCards: [],
+            matchedPairs: 0,
+            flipCount: 0,
+            baseAmount: 0,
+            initialBase: 0,
+            startTime: null,
+            timerInterval: null,
+            gameActive: false,
+            baseHistory: []  // 保底变动记录
+        };
+
+        const difficulties = {
+            easy: { rows: 4, cols: 5, base: 3688, name: '简单版(1288)' },
+            medium: { rows: 5, cols: 6, base: 6688, name: '中等版(2388)' },
+            hard: { rows: 5, cols: 10, base: 16688, name: '困难版(5588)' }
+        };
+
+        function startGame(difficulty) {
+            const config = difficulties[difficulty];
+            gameState.difficulty = difficulty;
+            gameState.rows = config.rows;
+            gameState.cols = config.cols;
+            gameState.totalCards = config.rows * config.cols;
+            gameState.baseAmount = config.base;
+            gameState.initialBase = config.base;
+            gameState.matchedPairs = 0;
+            gameState.flipCount = 0;
+            gameState.flippedCards = [];
+            gameState.gameActive = true;
+            gameState.startTime = Date.now();
+            gameState.baseHistory = [];  // 重置保底记录
+
+            initializeCards();
+            renderBoard();
+            updateStats();
+            startTimer();
+
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            document.getElementById('resultMessage').classList.remove('show');
+        }
+
+        function initializeCards() {
+            const pairCount = gameState.totalCards / 2;
+            const pairs = [];
+            
+            // 使用hong文件夹中的图片
+            const images = [
+                'hong/bijiben.png',
+                'hong/buzhanche.png',
+                'hong/huashi.png',
+                'hong/huatangqiang.png',
+                'hong/maixiaowen.png',
+                'hong/ScreenShot_2025-10-23_160824_240.png',
+                'hong/ScreenShot_2025-10-23_160837_964.png',
+                'hong/ScreenShot_2025-10-23_160845_746.png',
+                'hong/ScreenShot_2025-10-23_160915_342.png',
+                'hong/ScreenShot_2025-10-23_160919_401.png',
+                'hong/ScreenShot_2025-10-23_160929_879.png',
+                'hong/ScreenShot_2025-10-23_160935_051.png',
+                'hong/ScreenShot_2025-10-23_160942_949.png',
+                'hong/ScreenShot_2025-10-23_160950_341.png',
+                'hong/ScreenShot_2025-10-23_160954_953.png',
+                'hong/ScreenShot_2025-10-23_161008_000.png',
+                'hong/ScreenShot_2025-10-23_161016_022.png',
+                'hong/ScreenShot_2025-10-23_161025_975.png',
+                'hong/ScreenShot_2025-10-23_161029_922.png',
+                'hong/ScreenShot_2025-10-23_161033_559.png',
+                'hong/ScreenShot_2025-10-23_161038_203.png',
+                'hong/ScreenShot_2025-10-23_161054_703.png',
+                'hong/ScreenShot_2025-10-23_161101_071.png',
+                'hong/ScreenShot_2025-10-23_161105_315.png',
+                'hong/ScreenShot_2025-10-23_161115_253.png',
+                'hong/sheyingji.png',
+                'hong/wechat_2025-10-23_161047_775.png',
+                'hong/xianka.png',
+                'hong/you.png'
+            ];
+            
+            // 根据需要的配对数选择图片
+            for (let i = 0; i < pairCount; i++) {
+                const image = images[i % images.length];
+                pairs.push({ id: i, image: image });
+                pairs.push({ id: i, image: image });
+            }
+
+            // 洗牌（Fisher-Yates算法）
+            for (let i = pairs.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [pairs[i], pairs[j]] = [pairs[j], pairs[i]];
+            }
+
+            gameState.cards = pairs.map((card, index) => ({
+                ...card,
+                index: index,
+                flipped: false,
+                matched: false
+            }));
+        }
+
+        function renderBoard() {
+            const board = document.getElementById('gameBoard');
+            board.innerHTML = '';
+            board.style.gridTemplateColumns = `repeat(${gameState.cols}, 1fr)`;
+            board.style.gridTemplateRows = `repeat(${gameState.rows}, 1fr)`;
+
+            gameState.cards.forEach((card, index) => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'card';
+                cardElement.dataset.index = index;
+                cardElement.onclick = () => flipCard(index);
+                
+                // 计算位置编号（行-列）
+                const row = Math.floor(index / gameState.cols) + 1;
+                const col = (index % gameState.cols) + 1;
+                const position = `${row}-${col}`;
+                
+                // 创建卡片背面（显示位置）
+                const backDiv = document.createElement('div');
+                backDiv.className = 'card-back';
+                backDiv.textContent = position;
+                cardElement.appendChild(backDiv);
+                
+                // 创建卡片正面（显示图片）
+                const frontDiv = document.createElement('div');
+                frontDiv.className = 'card-front';
+                if (card.image) {
+                    const img = document.createElement('img');
+                    img.src = card.image;
+                    img.alt = '卡片';
+                    img.onerror = function() {
+                        console.error('图片加载失败:', card.image);
+                        this.style.display = 'none';
+                        frontDiv.textContent = '❌';
+                    };
+                    frontDiv.appendChild(img);
+                } else {
+                    frontDiv.textContent = '?';
+                    console.warn('卡片缺少图片路径:', card);
+                }
+                cardElement.appendChild(frontDiv);
+                
+                if (card.flipped || card.matched) {
+                    cardElement.classList.add(card.matched ? 'matched' : 'flipped');
+                }
+                
+                board.appendChild(cardElement);
+            });
+
+            const totalPairs = gameState.totalCards ? gameState.totalCards / 2 : 0;
+            document.getElementById('totalPairs').textContent = totalPairs;
+        }
+
+        function flipCard(index) {
+            if (!gameState.gameActive) return;
+            
+            const card = gameState.cards[index];
+            
+            // 不能翻已经翻开或已配对的牌
+            if (card.flipped || card.matched) return;
+            
+            // 不能同时翻超过2张牌
+            if (gameState.flippedCards.length >= 2) return;
+
+            card.flipped = true;
+            gameState.flippedCards.push(index);
+            renderBoard();
+
+            if (gameState.flippedCards.length === 2) {
+                gameState.flipCount++;
+                updateStats();
+                setTimeout(checkMatch, 800);
+            }
+        }
+
+        function checkMatch() {
+            const [index1, index2] = gameState.flippedCards;
+            const card1 = gameState.cards[index1];
+            const card2 = gameState.cards[index2];
+
+            if (card1.id === card2.id) {
+                // 配对成功
+                card1.matched = true;
+                card2.matched = true;
+                gameState.matchedPairs++;
+                updateStats();
+                
+                // 检查是否游戏结束
+                if (gameState.matchedPairs === gameState.totalCards / 2) {
+                    endGame();
+                }
+            } else {
+                // 配对失败，翻回去
+                card1.flipped = false;
+                card2.flipped = false;
+            }
+
+            gameState.flippedCards = [];
+            renderBoard();
+        }
+
+        function startTimer() {
+            if (gameState.timerInterval) {
+                clearInterval(gameState.timerInterval);
+            }
+            
+            gameState.timerInterval = setInterval(() => {
+                if (gameState.gameActive) {
+                    updateTimer();
+                }
+            }, 1000);
+        }
+
+        function updateTimer() {
+            const elapsed = Date.now() - gameState.startTime;
+            const hours = Math.floor(elapsed / 3600000);
+            const minutes = Math.floor((elapsed % 3600000) / 60000);
+            const seconds = Math.floor((elapsed % 60000) / 1000);
+            
+            const timeStr = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            document.getElementById('gameTime').textContent = timeStr;
+        }
+
+        function updateStats() {
+            document.getElementById('flipCount').textContent = gameState.flipCount;
+            document.getElementById('matchCount').textContent = gameState.matchedPairs;
+            document.getElementById('baseAmount').textContent = gameState.baseAmount + 'W';
+        }
+
+        let currentBaseAction = 'increase'; // 'increase' or 'decrease'
+
+        function showBaseInput(action) {
+            currentBaseAction = action;
+            const modal = document.getElementById('baseInputModal');
+            const title = document.getElementById('modalTitle');
+            const actionText = document.getElementById('modalAction');
+            const currentBase = document.getElementById('modalCurrentBase');
+            const input = document.getElementById('modalInput');
+            
+            title.textContent = action === 'increase' ? '➕ 增加保底' : '➖ 减少保底';
+            actionText.textContent = action === 'increase' ? '增加' : '减少';
+            currentBase.textContent = gameState.baseAmount + 'W';
+            input.value = '';
+            input.focus();
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeBaseInput() {
+            document.getElementById('baseInputModal').style.display = 'none';
+        }
+
+        function confirmBaseChange() {
+            const input = document.getElementById('modalInput');
+            const amount = parseInt(input.value);
+            
+            if (isNaN(amount) || amount <= 0) {
+                alert('❌ 请输入有效的金额数字');
+                return;
+            }
+            
+            const oldAmount = gameState.baseAmount;
+            let change = amount;
+            let newAmount;
+            
+            if (currentBaseAction === 'increase') {
+                newAmount = oldAmount + amount;
+            } else {
+                change = -amount;
+                newAmount = oldAmount - amount;
+                if (newAmount < 0) {
+                    alert('⚠️ 减少后保底不能为负数');
+                    return;
+                }
+            }
+            
+            gameState.baseAmount = newAmount;
+            
+            // 记录变动
+            const now = new Date();
+            const beijingTime = new Date(now.getTime() + (8 * 60 * 60 * 1000));
+            const timeStr = beijingTime.toISOString().replace('T', ' ').slice(0, 19);
+            
+            gameState.baseHistory.push({
+                time: timeStr,
+                change: change,
+                newAmount: newAmount,
+                oldAmount: oldAmount
+            });
+            
+            updateStats();
+            closeBaseInput();
+            
+            // 显示成功提示
+            const changeText = change > 0 ? `+${change}W` : `${change}W`;
+            alert(`✅ 保底已${currentBaseAction === 'increase' ? '增加' : '减少'}\n${changeText} → ${newAmount}W`);
+        }
+
+        function showBaseHistory() {
+            const modal = document.getElementById('historyModal');
+            const historyList = document.getElementById('modalHistoryList');
+            historyList.innerHTML = '';
+            
+            if (gameState.baseHistory.length === 0) {
+                historyList.innerHTML = '<div style="text-align: center; color: #666; padding: 30px;">暂无变动记录</div>';
+            } else {
+                // 显示所有记录，倒序
+                const allHistory = [...gameState.baseHistory].reverse();
+                
+                allHistory.forEach(record => {
+                    const item = document.createElement('div');
+                    item.className = `history-item ${record.change > 0 ? 'increase' : 'decrease'}`;
+                    
+                    const changeText = record.change > 0 ? `+${record.change}W` : `${record.change}W`;
+                    
+                    item.innerHTML = `
+                        <div class="history-change ${record.change > 0 ? 'increase' : 'decrease'}">
+                            ${changeText}
+                        </div>
+                        <div class="history-result">
+                            ${record.oldAmount}W → ${record.newAmount}W
+                        </div>
+                        <div class="history-time">
+                            ${record.time}
+                        </div>
+                    `;
+                    
+                    historyList.appendChild(item);
+                });
+            }
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeHistoryModal() {
+            document.getElementById('historyModal').style.display = 'none';
+        }
+
+        // 允许在输入框按回车确认
+        document.addEventListener('DOMContentLoaded', function() {
+            const modalInput = document.getElementById('modalInput');
+            if (modalInput) {
+                modalInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        confirmBaseChange();
+                    }
+                });
+            }
+        });
+
+        function endGame() {
+            gameState.gameActive = false;
+            clearInterval(gameState.timerInterval);
+            
+            const timeElapsed = document.getElementById('gameTime').textContent;
+            const message = `
+                🎉 恭喜完成游戏！🎉<br><br>
+                游戏时间: ${timeElapsed}<br>
+                翻牌次数: ${gameState.flipCount}<br>
+                剩余保底: ${gameState.baseAmount}W
+            `;
+            
+            const msgElement = document.getElementById('resultMessage');
+            msgElement.innerHTML = message;
+            msgElement.classList.add('show');
+        }
+
+        function resetGame() {
+            if (gameState.timerInterval) {
+                clearInterval(gameState.timerInterval);
+            }
+            startGame(gameState.difficulty);
+        }
+
+        function backToStart() {
+            if (gameState.timerInterval) {
+                clearInterval(gameState.timerInterval);
+            }
+            document.getElementById('startScreen').style.display = 'block';
+            document.getElementById('gameScreen').style.display = 'none';
+        }
+
+        function exportData() {
+            const data = {
+                version: '3.0',
+                difficulty: gameState.difficulty,
+                flipCount: gameState.flipCount,
+                matchedPairs: gameState.matchedPairs,
+                baseAmount: gameState.baseAmount,
+                initialBase: gameState.initialBase,
+                baseHistory: gameState.baseHistory,  // 保存保底变动记录
+                cards: gameState.cards.map(card => ({
+                    id: card.id,
+                    image: card.image,
+                    index: card.index,
+                    flipped: card.flipped,
+                    matched: card.matched
+                })),
+                rows: gameState.rows,
+                cols: gameState.cols,
+                totalCards: gameState.totalCards,
+                startTime: gameState.startTime,
+                currentTime: Date.now(),
+                gameActive: gameState.gameActive
+            };
+
+            const dataStr = JSON.stringify(data, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+            a.download = `flipcard_save_${timestamp}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            alert('✅ 数据导出成功！');
+        }
+
+        function importData() {
+            const fileInput = document.getElementById('fileInput');
+            fileInput.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        
+                        // 验证数据完整性
+                        if (!data.cards || !Array.isArray(data.cards)) {
+                            throw new Error('数据格式错误：缺少卡片数据');
+                        }
+                        
+                        // 恢复游戏状态
+                        gameState.difficulty = data.difficulty;
+                        gameState.flipCount = data.flipCount || 0;
+                        gameState.matchedPairs = data.matchedPairs || 0;
+                        gameState.baseAmount = data.baseAmount || 0;
+                        gameState.initialBase = data.initialBase || 0;
+                        gameState.baseHistory = data.baseHistory || [];  // 恢复保底记录
+                        gameState.gameActive = data.gameActive !== false;
+                        gameState.rows = data.rows || 0;
+                        gameState.cols = data.cols || 0;
+                        gameState.totalCards = data.totalCards || data.cards.length;
+                        gameState.flippedCards = [];
+                        
+                        // 确保每张卡片都有必要的属性，并保留完整的图片路径
+                        gameState.cards = data.cards.map((card, index) => ({
+                            id: card.id !== undefined ? card.id : index,
+                            image: card.image || '',
+                            index: card.index !== undefined ? card.index : index,
+                            flipped: card.flipped === true,
+                            matched: card.matched === true
+                        }));
+                        
+                        console.log('导入的卡片数据:', gameState.cards.slice(0, 3)); // 调试信息
+                        
+                        // 恢复时间
+                        const pausedDuration = data.currentTime - data.startTime;
+                        gameState.startTime = Date.now() - pausedDuration;
+
+                        // 渲染游戏
+                        document.getElementById('startScreen').style.display = 'none';
+                        document.getElementById('gameScreen').style.display = 'block';
+                        document.getElementById('resultMessage').classList.remove('show');
+                        renderBoard();
+                        updateStats();
+                        
+                        if (gameState.gameActive) {
+                            startTimer();
+                        } else {
+                            updateTimer();
+                        }
+
+                        console.log('游戏状态恢复完成');
+                        console.log('总卡片数:', gameState.totalCards);
+                        console.log('已配对:', gameState.matchedPairs);
+                        console.log('保底记录:', gameState.baseHistory);
+                        
+                        alert('✅ 数据导入成功！');
+                    } catch (error) {
+                        alert('❌ 导入失败：' + error.message);
+                        console.error('导入错误详情：', error);
+                    }
+                };
+                reader.readAsText(file);
+            };
+            
+            // 重置文件选择器，允许重复选择同一文件
+            fileInput.value = '';
+            fileInput.click();
+        }
+    </script>
+</body>
+</html>
+
