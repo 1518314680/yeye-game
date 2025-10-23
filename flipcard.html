@@ -239,15 +239,15 @@
             display: none;
             align-items: center;
             justify-content: center;
-            padding: 10px;
+            padding: 0;
+            overflow: hidden;
         }
 
         .card .card-front img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
         }
 
         .card.flipped {
@@ -691,9 +691,9 @@
             }
 
             .card-front img {
-                max-width: 90%;
-                max-height: 90%;
-                object-fit: contain;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
             }
 
             /* 简单难度在移动端的特殊优化 */
@@ -756,7 +756,7 @@
                 <div class="difficulty-card" onclick="startGame('easy')">
                     <div class="difficulty-name">🟢 简单版</div>
                     <div class="difficulty-info">
-                        网格：4 × 5<br>
+                        网格：4列 × 5行<br>
                         共 20 张牌<br>
                         编号：1288
                     </div>
@@ -766,7 +766,7 @@
                 <div class="difficulty-card" onclick="startGame('medium')">
                     <div class="difficulty-name">🟡 中等版</div>
                     <div class="difficulty-info">
-                        网格：5 × 6<br>
+                        网格：5列 × 6行<br>
                         共 30 张牌<br>
                         编号：2388
                     </div>
@@ -776,7 +776,7 @@
                 <div class="difficulty-card" onclick="startGame('hard')">
                     <div class="difficulty-name">🔴 困难版</div>
                     <div class="difficulty-info">
-                        网格：5 × 10<br>
+                        网格：5列 × 10行<br>
                         共 50 张牌<br>
                         编号：5588
                     </div>
@@ -927,9 +927,9 @@
         };
 
         const difficulties = {
-            easy: { rows: 4, cols: 5, base: 3688, name: '简单版(1288)' },
-            medium: { rows: 5, cols: 6, base: 6688, name: '中等版(2388)' },
-            hard: { rows: 5, cols: 10, base: 16688, name: '困难版(5588)' }
+            easy: { rows: 5, cols: 4, base: 3688, name: '简单版(1288)' },
+            medium: { rows: 6, cols: 5, base: 6688, name: '中等版(2388)' },
+            hard: { rows: 10, cols: 5, base: 16688, name: '困难版(5588)' }
         };
 
         function startGame(difficulty) {
@@ -1022,11 +1022,11 @@
             board.style.gridTemplateRows = `repeat(${gameState.rows}, 1fr)`;
             
             // 为移动端设置难度属性，用于响应式样式
-            if (gameState.rows === 4 && gameState.cols === 5) {
+            if (gameState.rows === 5 && gameState.cols === 4) {
                 board.setAttribute('data-difficulty', 'easy');
-            } else if (gameState.rows === 5 && gameState.cols === 6) {
+            } else if (gameState.rows === 6 && gameState.cols === 5) {
                 board.setAttribute('data-difficulty', 'medium');
-            } else if (gameState.rows === 5 && gameState.cols === 10) {
+            } else if (gameState.rows === 10 && gameState.cols === 5) {
                 board.setAttribute('data-difficulty', 'hard');
             }
 
