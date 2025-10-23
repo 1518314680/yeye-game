@@ -4,8 +4,8 @@
 
 ## 🎮 在线体验
 
-- **游戏合集首页**: [https://1518314680.github.io/yeye-game/home.html](https://1518314680.github.io/yeye-game/home.html)
-- **扫雷游戏**: [https://1518314680.github.io/yeye-game/index.html](https://1518314680.github.io/yeye-game/index.html)
+- **游戏合集首页**: [https://1518314680.github.io/yeye-game/](https://1518314680.github.io/yeye-game/)
+- **扫雷游戏**: [https://1518314680.github.io/yeye-game/minesweeper.html](https://1518314680.github.io/yeye-game/minesweeper.html)
 - **翻翻乐游戏**: [https://1518314680.github.io/yeye-game/flipcard.html](https://1518314680.github.io/yeye-game/flipcard.html)
 
 ## ✨ 游戏特色
@@ -68,15 +68,15 @@ php -S localhost:8000
 
 3. **访问游戏**
 ```
-浏览器打开：http://localhost:8000/home.html
+浏览器打开：http://localhost:8000/
 ```
 
 ## 📂 项目结构
 
 ```
 yeye-game/
-├── home.html                # 游戏合集首页
-├── index.html               # 扫雷游戏
+├── index.html               # 游戏合集首页（默认首页）
+├── minesweeper.html         # 扫雷游戏
 ├── flipcard.html            # 翻翻乐游戏
 ├── beijingtu.jpg            # 背景图片
 ├── hong/                    # 翻翻乐卡片图片（29张）
