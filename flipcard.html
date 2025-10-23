@@ -672,10 +672,60 @@
             .sidebar {
                 flex: 1;
                 width: 100%;
+                margin-top: 20px;
             }
 
-            .card {
-                font-size: 24px;
+            /* 移动端卡片优化 */
+            .game-board {
+                gap: 8px;
+                max-width: 100%;
+                margin: 0 auto;
+            }
+
+            .card-back {
+                font-size: 22px;
+            }
+
+            .card-front {
+                font-size: 18px;
+            }
+
+            .card-front img {
+                max-width: 90%;
+                max-height: 90%;
+                object-fit: contain;
+            }
+
+            /* 简单难度在移动端的特殊优化 */
+            .game-board[data-difficulty="easy"] {
+                max-width: 400px;
+            }
+
+            /* 中等难度 */
+            .game-board[data-difficulty="medium"] {
+                max-width: 100%;
+            }
+
+            /* 困难难度需要更小的间距和字体 */
+            .game-board[data-difficulty="hard"] {
+                gap: 4px;
+            }
+
+            .game-board[data-difficulty="hard"] .card-back {
+                font-size: 18px;
+            }
+
+            .stat-item {
+                font-size: 14px;
+            }
+
+            .btn {
+                font-size: 13px;
+                padding: 8px 16px;
+            }
+
+            .container {
+                padding: 15px;
             }
         }
     </style>
@@ -970,6 +1020,15 @@
             board.innerHTML = '';
             board.style.gridTemplateColumns = `repeat(${gameState.cols}, 1fr)`;
             board.style.gridTemplateRows = `repeat(${gameState.rows}, 1fr)`;
+            
+            // 为移动端设置难度属性，用于响应式样式
+            if (gameState.rows === 4 && gameState.cols === 5) {
+                board.setAttribute('data-difficulty', 'easy');
+            } else if (gameState.rows === 5 && gameState.cols === 6) {
+                board.setAttribute('data-difficulty', 'medium');
+            } else if (gameState.rows === 5 && gameState.cols === 10) {
+                board.setAttribute('data-difficulty', 'hard');
+            }
 
             gameState.cards.forEach((card, index) => {
                 const cardElement = document.createElement('div');
@@ -977,15 +1036,13 @@
                 cardElement.dataset.index = index;
                 cardElement.onclick = () => flipCard(index);
                 
-                // 计算位置编号（行-列）
-                const row = Math.floor(index / gameState.cols) + 1;
-                const col = (index % gameState.cols) + 1;
-                const position = `${row}-${col}`;
+                // 使用简单的序号（1, 2, 3, ...）而不是行-列格式
+                const cardNumber = index + 1;
                 
-                // 创建卡片背面（显示位置）
+                // 创建卡片背面（显示序号）
                 const backDiv = document.createElement('div');
                 backDiv.className = 'card-back';
-                backDiv.textContent = position;
+                backDiv.textContent = cardNumber;
                 cardElement.appendChild(backDiv);
                 
                 // 创建卡片正面（显示图片）
