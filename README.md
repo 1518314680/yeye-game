@@ -4,11 +4,9 @@
 
 ## 🎮 在线体验
 
-- **游戏合集首页**: [https://你的用户名.github.io/yeye-game/home.html](https://你的用户名.github.io/yeye-game/home.html)
-- **扫雷游戏**: [https://你的用户名.github.io/yeye-game/index.html](https://你的用户名.github.io/yeye-game/index.html)
-- **翻翻乐游戏**: [https://你的用户名.github.io/yeye-game/flipcard.html](https://你的用户名.github.io/yeye-game/flipcard.html)
-
-> 部署后记得将上面的 `你的用户名` 替换为你的 GitHub 用户名
+- **游戏合集首页**: [https://1518314680.github.io/yeye-game/home.html](https://1518314680.github.io/yeye-game/home.html)
+- **扫雷游戏**: [https://1518314680.github.io/yeye-game/index.html](https://1518314680.github.io/yeye-game/index.html)
+- **翻翻乐游戏**: [https://1518314680.github.io/yeye-game/flipcard.html](https://1518314680.github.io/yeye-game/flipcard.html)
 
 ## ✨ 游戏特色
 
@@ -43,7 +41,7 @@
 
 1. **克隆仓库**
 ```bash
-git clone https://github.com/你的用户名/yeye-game.git
+git clone https://github.com/1518314680/yeye-game.git
 cd yeye-game
 ```
 
@@ -154,7 +152,7 @@ yeye-game/
 git add .
 git commit -m "Initial commit"
 git branch -M main
-git remote add origin https://github.com/你的用户名/yeye-game.git
+git remote add origin https://github.com/1518314680/yeye-game.git
 git push -u origin main
 ```
 
@@ -162,7 +160,7 @@ git push -u origin main
    - 进入仓库 Settings → Pages
    - Source 选择 `main` 分支
    - 点击 Save
-   - 等待几分钟后访问：`https://你的用户名.github.io/yeye-game/home.html`
+   - 等待几分钟后访问：`https://1518314680.github.io/yeye-game/home.html`
 
 ## 🌐 其他部署方式
 
