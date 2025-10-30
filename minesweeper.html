@@ -692,18 +692,10 @@
             const bombs = new Array(15).fill('bomb');
             
             // 固定的13个数字：1、2、8、5、1、4、3、4、5、4、6、3、2
-            const fixedNumbers = [1, 2, 8, 5, 1, 4, 3, 4, 5, 4, 6, 3, 2];
+            const numbers = [1, 2, 8, 5, 1, 4, 3, 4, 5, 4, 6, 3, 2];
             
-            // 从固定的13个数字中随机选7个补充到20个（40%）
-            const extraNumbers = [];
-            for (let i = 0; i < 7; i++) {
-                const randomIndex = Math.floor(Math.random() * fixedNumbers.length);
-                extraNumbers.push(fixedNumbers[randomIndex]);
-            }
-            const numbers = [...fixedNumbers, ...extraNumbers];
-            
-            // 空白格子30%：14个 (49 - 15 - 20 = 14)
-            const empties = new Array(14).fill(0);
+            // 空白格子：21个 (49 - 15 - 13 = 21)
+            const empties = new Array(21).fill(0);
             
             // 合并所有元素
             const allCells = [...bombs, ...numbers, ...empties];
