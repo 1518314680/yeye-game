@@ -174,6 +174,51 @@
             transform: translateY(-2px);
         }
 
+        .difficulty-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 8px;
+            text-shadow: 0 0 8px currentColor;
+        }
+
+        .difficulty-experience {
+            background: linear-gradient(135deg, rgba(100, 200, 100, 0.3), rgba(50, 150, 50, 0.4));
+            color: #88ff88;
+            border: 1px solid #88ff88;
+        }
+
+        .difficulty-advanced {
+            background: linear-gradient(135deg, rgba(100, 150, 255, 0.3), rgba(50, 100, 200, 0.4));
+            color: #88bbff;
+            border: 1px solid #88bbff;
+        }
+
+        .difficulty-expert {
+            background: linear-gradient(135deg, rgba(200, 100, 255, 0.3), rgba(150, 50, 200, 0.4));
+            color: #cc88ff;
+            border: 1px solid #cc88ff;
+        }
+
+        .difficulty-supreme {
+            background: linear-gradient(135deg, rgba(255, 180, 0, 0.4), rgba(255, 100, 0, 0.5));
+            color: #ffaa00;
+            border: 2px solid #ffaa00;
+            animation: supremeGlow 2s ease-in-out infinite;
+            box-shadow: 0 0 15px rgba(255, 170, 0, 0.6);
+        }
+
+        @keyframes supremeGlow {
+            0%, 100% {
+                box-shadow: 0 0 15px rgba(255, 170, 0, 0.6);
+            }
+            50% {
+                box-shadow: 0 0 25px rgba(255, 170, 0, 1);
+            }
+        }
+
         /* 游戏界面 */
         .game-screen {
             display: none;
@@ -251,6 +296,16 @@
             box-shadow: 
                 inset 0 0 20px rgba(0, 0, 0, 0.5),
                 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .cell.unrevealed-end {
+            background: linear-gradient(145deg, rgba(100, 100, 120, 0.3), rgba(80, 80, 100, 0.4));
+            cursor: default;
+            border-color: rgba(150, 150, 170, 0.4);
+            opacity: 0.6;
+            box-shadow: 
+                inset 0 0 15px rgba(255, 255, 255, 0.1),
+                0 0 5px rgba(0, 0, 0, 0.2);
         }
 
         .cell.bomb {
@@ -520,24 +575,24 @@
                     📂 导入存档继续游戏
                 </button>
             </div>
-            <h2>💣 选择扫雷次数 💣</h2>
+            <h2>💣 选择游戏难度 💣</h2>
             <p style="color: #00ffff; margin-bottom: 20px; font-size: 16px;">游戏为固定7×7网格，共49个格子</p>
             <div class="grid-options">
-                <div class="grid-option" onclick="startGame(9)">
-                    <div>9次</div>
-                    <div style="font-size: 14px; margin-top: 5px;">扫雷9次</div>
+                <div class="grid-option" onclick="startGame(9, 988, 4288)">
+                    <div>9格 <span class="difficulty-tag difficulty-experience">体验</span></div>
+                    <div style="font-size: 14px; margin-top: 5px;">988元 | 保底4288W</div>
                 </div>
-                <div class="grid-option" onclick="startGame(12)">
-                    <div>12次</div>
-                    <div style="font-size: 14px; margin-top: 5px;">扫雷12次</div>
+                <div class="grid-option" onclick="startGame(12, 1288, 5288)">
+                    <div>12格 <span class="difficulty-tag difficulty-advanced">进阶</span></div>
+                    <div style="font-size: 14px; margin-top: 5px;">1288元 | 保底5288W</div>
                 </div>
-                <div class="grid-option" onclick="startGame(16)">
-                    <div>16次</div>
-                    <div style="font-size: 14px; margin-top: 5px;">扫雷16次</div>
+                <div class="grid-option" onclick="startGame(16, 1888, 7288)">
+                    <div>16格 <span class="difficulty-tag difficulty-expert">专家</span></div>
+                    <div style="font-size: 14px; margin-top: 5px;">1888元 | 保底7288W</div>
                 </div>
-                <div class="grid-option" onclick="startGame(22)">
-                    <div>22次</div>
-                    <div style="font-size: 14px; margin-top: 5px;">扫雷22次</div>
+                <div class="grid-option" onclick="startGame(22, 2388, 8888)">
+                    <div>22格 <span class="difficulty-tag difficulty-supreme">至尊</span></div>
+                    <div style="font-size: 14px; margin-top: 5px;">2388元 | 保底8888W</div>
                 </div>
             </div>
         </div>
@@ -559,7 +614,10 @@
                 <div class="info-area">
                     <div class="stats-box">
                         <div class="stat-item">
-                            💰 初始保底: <span class="stat-value">1000W</span>
+                            💵 单价: <span class="stat-value" id="gamePrice">0元</span>
+                        </div>
+                        <div class="stat-item">
+                            💰 初始保底: <span class="stat-value" id="initialBase">0W</span>
                         </div>
                         <div class="stat-item">
                             🎯 扫雷次数: <span class="stat-value" id="clickCount">0/0</span>
@@ -570,19 +628,18 @@
                         <div class="stat-item">
                             🔢 累计出红: <span class="stat-value" id="redCount">0</span>
                         </div>
+                        <div class="stat-item">
+                            ⭕ 空格数量: <span class="stat-value" id="emptyCount">0</span>
+                        </div>
                         <div class="stat-item" style="border-top: 2px solid #ffb6c1; padding-top: 15px; margin-top: 15px;">
-                            💎 当前保底: <span class="stat-value" id="currentBase">1000W</span>
+                            💎 当前保底: <span class="stat-value" id="currentBase">0W</span>
                         </div>
                     </div>
 
                     <div class="rules-box">
                         <h3>🎮 迷你扫雷游戏规则</h3>
-                        <p>老板下单后可选择9/12/16/22个格子进行排雷。</p>
                         <p>方格下的数字也有炸弹，也有空白格，如扫出数字，打手必须带出累计格子数的红，并打能够保底才能结单。</p>
                         <p>如老板扫到炸弹💣，则保底 <strong>-300W</strong>。</p>
-                        <p style="margin-top: 15px; color: #00ffff; font-weight: bold;">
-                            ⚡ 提示: 点击格子开始扫雷！
-                        </p>
                     </div>
                 </div>
             </div>
@@ -600,16 +657,22 @@
             revealed: [],
             bombCount: 0,
             redCount: 0,
-            baseAmount: 1000,
+            emptyCount: 0,       // 空格数量
+            gamePrice: 0,        // 游戏价格
+            initialBase: 0,      // 初始保底
+            baseAmount: 0,       // 当前保底
             gameOver: false
         };
 
-        function startGame(maxClicks) {
+        function startGame(maxClicks, price, baseAmount) {
             gameState.maxClicks = maxClicks;
             gameState.clickCount = 0;
             gameState.bombCount = 0;
             gameState.redCount = 0;
-            gameState.baseAmount = 1000;
+            gameState.emptyCount = 0;
+            gameState.gamePrice = price;
+            gameState.initialBase = baseAmount;
+            gameState.baseAmount = baseAmount;
             gameState.gameOver = false;
 
             initializeBoard();
@@ -625,14 +688,22 @@
             gameState.board = [];
             gameState.revealed = [];
 
-            // 固定的6个炸弹
-            const bombs = ['bomb', 'bomb', 'bomb', 'bomb', 'bomb', 'bomb'];
+            // 炸弹30%：15个
+            const bombs = new Array(15).fill('bomb');
             
-            // 固定的数字：1、2、8、5、1、4、3、4、5、4、6、3、2
-            const numbers = [1, 2, 8, 5, 1, 4, 3, 4, 5, 4, 6, 3, 2];
+            // 固定的13个数字：1、2、8、5、1、4、3、4、5、4、6、3、2
+            const fixedNumbers = [1, 2, 8, 5, 1, 4, 3, 4, 5, 4, 6, 3, 2];
             
-            // 剩余30个空白格子 (49 - 6个炸弹 - 13个数字 = 30个空白)
-            const empties = new Array(30).fill(0);
+            // 从固定的13个数字中随机选7个补充到20个（40%）
+            const extraNumbers = [];
+            for (let i = 0; i < 7; i++) {
+                const randomIndex = Math.floor(Math.random() * fixedNumbers.length);
+                extraNumbers.push(fixedNumbers[randomIndex]);
+            }
+            const numbers = [...fixedNumbers, ...extraNumbers];
+            
+            // 空白格子30%：14个 (49 - 15 - 20 = 14)
+            const empties = new Array(14).fill(0);
             
             // 合并所有元素
             const allCells = [...bombs, ...numbers, ...empties];
@@ -690,11 +761,12 @@
                 gameState.bombCount++;
                 gameState.baseAmount -= 300;
                 updateStats();
-                showMessage('踩到炸弹！保底 -300W 💥', 'danger');
             } else if (value === 0) {
                 // 空白格
                 cell.classList.add('empty');
                 cell.innerHTML = '';
+                gameState.emptyCount++;
+                updateStats();
             } else {
                 // 数字格
                 cell.classList.add('number');
@@ -707,8 +779,11 @@
         }
 
         function updateStats() {
+            document.getElementById('gamePrice').textContent = gameState.gamePrice + '元';
+            document.getElementById('initialBase').textContent = gameState.initialBase + 'W';
             document.getElementById('bombCount').textContent = gameState.bombCount;
             document.getElementById('redCount').textContent = gameState.redCount;
+            document.getElementById('emptyCount').textContent = gameState.emptyCount;
             document.getElementById('currentBase').textContent = gameState.baseAmount + 'W';
             document.getElementById('clickCount').textContent = `${gameState.clickCount}/${gameState.maxClicks}`;
         }
@@ -717,6 +792,10 @@
             // 检查是否用完所有点击次数
             if (gameState.clickCount >= gameState.maxClicks) {
                 gameState.gameOver = true;
+                
+                // 显示所有未翻开的格子
+                revealAllCells();
+                
                 const finalMessage = `
                     游戏结束！扫雷次数已用完<br>
                     累计出红: ${gameState.redCount} | 
@@ -727,6 +806,30 @@
             }
         }
 
+        function revealAllCells() {
+            // 游戏结束时，显示所有格子
+            for (let i = 0; i < gameState.board.length; i++) {
+                if (!gameState.revealed[i]) {
+                    const cell = document.querySelector(`[data-index="${i}"]`);
+                    const value = gameState.board[i];
+                    
+                    // 标记为未扫的格子（游戏结束后显示）
+                    cell.classList.add('unrevealed-end');
+                    
+                    if (value === 'bomb') {
+                        cell.classList.add('bomb');
+                        cell.innerHTML = '💣';
+                    } else if (value === 0) {
+                        cell.classList.add('empty');
+                        cell.innerHTML = '';
+                    } else {
+                        cell.classList.add('number');
+                        cell.innerHTML = value;
+                    }
+                }
+            }
+        }
+
         function showMessage(message, type) {
             const msgElement = document.getElementById('resultMessage');
             msgElement.innerHTML = message;
@@ -734,7 +837,7 @@
         }
 
         function resetGame() {
-            startGame(gameState.maxClicks);
+            startGame(gameState.maxClicks, gameState.gamePrice, gameState.initialBase);
         }
 
         function backToStart() {
@@ -745,12 +848,15 @@
         // 导出游戏数据
         function exportGameData() {
             const data = {
-                version: '1.0',
+                version: '2.0',
                 gameType: 'minesweeper',
                 maxClicks: gameState.maxClicks,
                 clickCount: gameState.clickCount,
                 bombCount: gameState.bombCount,
                 redCount: gameState.redCount,
+                emptyCount: gameState.emptyCount,
+                gamePrice: gameState.gamePrice,
+                initialBase: gameState.initialBase,
                 baseAmount: gameState.baseAmount,
                 board: gameState.board,
                 revealed: gameState.revealed,
@@ -796,7 +902,10 @@
                         gameState.clickCount = data.clickCount || 0;
                         gameState.bombCount = data.bombCount || 0;
                         gameState.redCount = data.redCount || 0;
-                        gameState.baseAmount = data.baseAmount || 1000;
+                        gameState.emptyCount = data.emptyCount || 0;
+                        gameState.gamePrice = data.gamePrice || 0;
+                        gameState.initialBase = data.initialBase || 0;
+                        gameState.baseAmount = data.baseAmount || 0;
                         gameState.board = data.board || [];
                         gameState.revealed = data.revealed || [];
                         gameState.gameOver = data.clickCount >= data.maxClicks; // 根据点击次数判断
@@ -805,6 +914,27 @@
                         document.getElementById('startScreen').style.display = 'none';
                         document.getElementById('gameScreen').style.display = 'block';
                         renderBoard();
+                        
+                        // 恢复已显示的格子状态
+                        for (let i = 0; i < gameState.revealed.length; i++) {
+                            if (gameState.revealed[i]) {
+                                const cell = document.querySelector(`[data-index="${i}"]`);
+                                cell.classList.add('revealed');
+                                const value = gameState.board[i];
+                                
+                                if (value === 'bomb') {
+                                    cell.classList.add('bomb');
+                                    cell.innerHTML = '💣';
+                                } else if (value === 0) {
+                                    cell.classList.add('empty');
+                                    cell.innerHTML = '';
+                                } else {
+                                    cell.classList.add('number');
+                                    cell.innerHTML = value;
+                                }
+                            }
+                        }
+                        
                         updateStats();
                         
                         // 如果游戏已结束，显示结果
