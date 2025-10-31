@@ -578,19 +578,19 @@
             <h2>💣 选择游戏难度 💣</h2>
             <p style="color: #00ffff; margin-bottom: 20px; font-size: 16px;">游戏为固定7×7网格，共49个格子</p>
             <div class="grid-options">
-                <div class="grid-option" onclick="startGame(9, 988, 4288)">
+                <div class="grid-option" onclick="startGame(9, 988, 4288, 7)">
                     <div>9格 <span class="difficulty-tag difficulty-experience">体验</span></div>
                     <div style="font-size: 14px; margin-top: 5px;">988元 | 保底4288W</div>
                 </div>
-                <div class="grid-option" onclick="startGame(12, 1288, 5288)">
+                <div class="grid-option" onclick="startGame(12, 1288, 5288, 9)">
                     <div>12格 <span class="difficulty-tag difficulty-advanced">进阶</span></div>
                     <div style="font-size: 14px; margin-top: 5px;">1288元 | 保底5288W</div>
                 </div>
-                <div class="grid-option" onclick="startGame(16, 1888, 7288)">
+                <div class="grid-option" onclick="startGame(16, 1888, 7288, 12)">
                     <div>16格 <span class="difficulty-tag difficulty-expert">专家</span></div>
                     <div style="font-size: 14px; margin-top: 5px;">1888元 | 保底7288W</div>
                 </div>
-                <div class="grid-option" onclick="startGame(22, 2388, 8888)">
+                <div class="grid-option" onclick="startGame(22, 2388, 8888, 14)">
                     <div>22格 <span class="difficulty-tag difficulty-supreme">至尊</span></div>
                     <div style="font-size: 14px; margin-top: 5px;">2388元 | 保底8888W</div>
                 </div>
@@ -626,7 +626,7 @@
                             💣 已踩炸弹: <span class="stat-value" id="bombCount">0</span>
                         </div>
                         <div class="stat-item">
-                            🔢 累计出红: <span class="stat-value" id="redCount">0</span>
+                            🔢 累计出红(格): <span class="stat-value" id="redCount">0</span>
                         </div>
                         <div class="stat-item">
                             ⭕ 空格数量: <span class="stat-value" id="emptyCount">0</span>
@@ -661,10 +661,11 @@
             gamePrice: 0,        // 游戏价格
             initialBase: 0,      // 初始保底
             baseAmount: 0,       // 当前保底
+            totalBombs: 0,       // 炸弹总数
             gameOver: false
         };
 
-        function startGame(maxClicks, price, baseAmount) {
+        function startGame(maxClicks, price, baseAmount, totalBombs) {
             gameState.maxClicks = maxClicks;
             gameState.clickCount = 0;
             gameState.bombCount = 0;
@@ -673,6 +674,7 @@
             gameState.gamePrice = price;
             gameState.initialBase = baseAmount;
             gameState.baseAmount = baseAmount;
+            gameState.totalBombs = totalBombs;
             gameState.gameOver = false;
 
             initializeBoard();
@@ -688,14 +690,15 @@
             gameState.board = [];
             gameState.revealed = [];
 
-            // 炸弹30%：15个
-            const bombs = new Array(15).fill('bomb');
+            // 根据难度设置炸弹数量
+            const bombs = new Array(gameState.totalBombs).fill('bomb');
             
             // 固定的13个数字：1、2、8、5、1、4、3、4、5、4、6、3、2
             const numbers = [1, 2, 8, 5, 1, 4, 3, 4, 5, 4, 6, 3, 2];
             
-            // 空白格子：21个 (49 - 15 - 13 = 21)
-            const empties = new Array(21).fill(0);
+            // 空白格子数量 = 49 - 炸弹数量 - 13个数字
+            const emptyCount = 49 - gameState.totalBombs - 13;
+            const empties = new Array(emptyCount).fill(0);
             
             // 合并所有元素
             const allCells = [...bombs, ...numbers, ...empties];
@@ -790,8 +793,8 @@
                 
                 const finalMessage = `
                     游戏结束！扫雷次数已用完<br>
-                    累计出红: ${gameState.redCount} | 
-                    踩到炸弹: ${gameState.bombCount} | 
+                    累计出红: ${gameState.redCount} 格| 
+                    踩到炸弹: ${gameState.bombCount} 个| 
                     最终保底: ${gameState.baseAmount}W
                 `;
                 showMessage(finalMessage, gameState.baseAmount > 0 ? 'success' : 'danger');
@@ -829,7 +832,7 @@
         }
 
         function resetGame() {
-            startGame(gameState.maxClicks, gameState.gamePrice, gameState.initialBase);
+            startGame(gameState.maxClicks, gameState.gamePrice, gameState.initialBase, gameState.totalBombs);
         }
 
         function backToStart() {
@@ -850,6 +853,7 @@
                 gamePrice: gameState.gamePrice,
                 initialBase: gameState.initialBase,
                 baseAmount: gameState.baseAmount,
+                totalBombs: gameState.totalBombs,
                 board: gameState.board,
                 revealed: gameState.revealed,
                 startTime: Date.now()
@@ -898,6 +902,7 @@
                         gameState.gamePrice = data.gamePrice || 0;
                         gameState.initialBase = data.initialBase || 0;
                         gameState.baseAmount = data.baseAmount || 0;
+                        gameState.totalBombs = data.totalBombs || 15; // 兼容旧版本
                         gameState.board = data.board || [];
                         gameState.revealed = data.revealed || [];
                         gameState.gameOver = data.clickCount >= data.maxClicks; // 根据点击次数判断
@@ -933,8 +938,8 @@
                         if (gameState.gameOver) {
                             const finalMessage = `
                                 游戏结束！扫雷次数已用完<br>
-                                累计出红: ${gameState.redCount} | 
-                                踩到炸弹: ${gameState.bombCount} | 
+                                累计出红: ${gameState.redCount} 格| 
+                                踩到炸弹: ${gameState.bombCount} 个| 
                                 最终保底: ${gameState.baseAmount}W
                             `;
                             showMessage(finalMessage, gameState.baseAmount > 0 ? 'success' : 'danger');
