@@ -465,73 +465,145 @@
                 explored = Array(MAZE_SIZE).fill(null).map(() => Array(MAZE_SIZE).fill(false));
                 correctPath = [];
                 
-                // 生成唯一正确路径（确保路径之间有墙隔开）
+                // 生成唯一正确路径（使用DFS随机游走，可以向任意方向）
                 let x = 0, y = 0;
                 correctPath.push({x, y});
                 maze[y][x] = 0;
                 
-                // 使用改进的路径生成，确保路径不会相邻
-                const targetSteps = 18 + Math.floor(Math.random() * 8); // 18-25步（目标22步左右）
+                // 使用深度优先搜索生成曲折路径
+                const targetSteps = 18 + Math.floor(Math.random() * 8); // 18-25步
                 let stepCount = 0;
+                let attempts = 0;
+                const maxAttempts = 1000;
                 
-                while (stepCount < targetSteps && (x < MAZE_SIZE - 1 || y < MAZE_SIZE - 1)) {
+                while (stepCount < targetSteps && attempts < maxAttempts) {
+                    attempts++;
                     const possibleMoves = [];
                     
-                    // 向右移动（确保不会与其他路径相邻）
-                    if (x < MAZE_SIZE - 1) {
-                        const nx = x + 1;
-                        const ny = y;
-                        // 检查是否会与已有路径相邻（除了来的方向）
-                        let isValid = true;
-                        // 检查上方
-                        if (ny > 0 && maze[ny - 1][nx] === 0 && !(nx === x && ny - 1 === y)) isValid = false;
-                        // 检查下方
-                        if (ny < MAZE_SIZE - 1 && maze[ny + 1][nx] === 0 && !(nx === x && ny + 1 === y)) isValid = false;
-                        
-                        if (isValid || correctPath.length === 1) {
-                            possibleMoves.push({dx: 1, dy: 0});
-                        }
-                    }
+                    // 四个方向都可以尝试（上下左右）
+                    const directions = [
+                        {dx: 0, dy: -1, name: 'up'},    // 上
+                        {dx: 1, dy: 0, name: 'right'},  // 右
+                        {dx: 0, dy: 1, name: 'down'},   // 下
+                        {dx: -1, dy: 0, name: 'left'}   // 左
+                    ];
                     
-                    // 向下移动（确保不会与其他路径相邻）
-                    if (y < MAZE_SIZE - 1) {
-                        const nx = x;
-                        const ny = y + 1;
+                    for (let dir of directions) {
+                        const nx = x + dir.dx;
+                        const ny = y + dir.dy;
+                        
+                        // 检查边界
+                        if (nx < 0 || nx >= MAZE_SIZE || ny < 0 || ny >= MAZE_SIZE) continue;
+                        
+                        // 如果这个格子已经是路径了，跳过
+                        if (maze[ny][nx] === 0) continue;
+                        
                         // 检查是否会与已有路径相邻（除了来的方向）
                         let isValid = true;
-                        // 检查左侧
-                        if (nx > 0 && maze[ny][nx - 1] === 0 && !(nx - 1 === x && ny === y)) isValid = false;
-                        // 检查右侧
-                        if (nx < MAZE_SIZE - 1 && maze[ny][nx + 1] === 0 && !(nx + 1 === x && ny === y)) isValid = false;
                         
-                        if (isValid || correctPath.length === 1) {
-                            possibleMoves.push({dx: 0, dy: 1});
+                        // 检查四周是否有其他路径（除了当前位置）
+                        const checkDirs = [
+                            {dx: 0, dy: -1}, {dx: 1, dy: 0}, 
+                            {dx: 0, dy: 1}, {dx: -1, dy: 0}
+                        ];
+                        
+                        for (let check of checkDirs) {
+                            const cx = nx + check.dx;
+                            const cy = ny + check.dy;
+                            
+                            // 跳过当前位置
+                            if (cx === x && cy === y) continue;
+                            
+                            // 检查是否越界
+                            if (cx < 0 || cx >= MAZE_SIZE || cy < 0 || cy >= MAZE_SIZE) continue;
+                            
+                            // 如果周围有路径，则无效
+                            if (maze[cy][cx] === 0) {
+                                isValid = false;
+                                break;
+                            }
+                        }
+                        
+                        if (isValid) {
+                            possibleMoves.push({dx: dir.dx, dy: dir.dy});
                         }
                     }
                     
                     if (possibleMoves.length > 0) {
-                        const move = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
-                        x += move.dx;
-                        y += move.dy;
+                        // 优先选择靠近终点的方向，但保留随机性
+                        const towardsEnd = [];
+                        const others = [];
+                        
+                        for (let move of possibleMoves) {
+                            const nx = x + move.dx;
+                            const ny = y + move.dy;
+                            const distToEnd = Math.abs(nx - (MAZE_SIZE - 1)) + Math.abs(ny - (MAZE_SIZE - 1));
+                            const currentDist = Math.abs(x - (MAZE_SIZE - 1)) + Math.abs(y - (MAZE_SIZE - 1));
+                            
+                            if (distToEnd < currentDist) {
+                                towardsEnd.push(move);
+                            } else {
+                                others.push(move);
+                            }
+                        }
+                        
+                        // 70%概率选择靠近终点的方向，30%选择其他方向（增加曲折）
+                        let selectedMove;
+                        if (towardsEnd.length > 0 && Math.random() < 0.7) {
+                            selectedMove = towardsEnd[Math.floor(Math.random() * towardsEnd.length)];
+                        } else if (others.length > 0) {
+                            selectedMove = others[Math.floor(Math.random() * others.length)];
+                        } else if (towardsEnd.length > 0) {
+                            selectedMove = towardsEnd[Math.floor(Math.random() * towardsEnd.length)];
+                        } else {
+                            selectedMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+                        }
+                        
+                        x += selectedMove.dx;
+                        y += selectedMove.dy;
                         correctPath.push({x, y});
                         maze[y][x] = 0;
                         stepCount++;
-                    } else {
-                        // 如果没有有效移动，直接向终点移动
-                        break;
+                        attempts = 0; // 重置尝试计数
                     }
                 }
                 
-                // 确保到达终点（如果还没到）
-                while (x < MAZE_SIZE - 1) {
-                    x++;
-                    correctPath.push({x, y});
-                    maze[y][x] = 0;
-                }
-                while (y < MAZE_SIZE - 1) {
-                    y++;
-                    correctPath.push({x, y});
-                    maze[y][x] = 0;
+                // 确保连接到终点（使用最短路径）
+                while (x !== MAZE_SIZE - 1 || y !== MAZE_SIZE - 1) {
+                    let moved = false;
+                    
+                    // 尝试向右移动
+                    if (x < MAZE_SIZE - 1 && maze[y][x + 1] !== 0) {
+                        x++;
+                        correctPath.push({x, y});
+                        maze[y][x] = 0;
+                        moved = true;
+                    }
+                    // 尝试向下移动
+                    else if (y < MAZE_SIZE - 1 && maze[y + 1][x] !== 0) {
+                        y++;
+                        correctPath.push({x, y});
+                        maze[y][x] = 0;
+                        moved = true;
+                    }
+                    // 如果右和下都不行，尝试其他方向
+                    else {
+                        const dirs = [{dx:0,dy:-1}, {dx:1,dy:0}, {dx:0,dy:1}, {dx:-1,dy:0}];
+                        for (let dir of dirs) {
+                            const nx = x + dir.dx;
+                            const ny = y + dir.dy;
+                            if (nx >= 0 && nx < MAZE_SIZE && ny >= 0 && ny < MAZE_SIZE && maze[ny][nx] !== 0) {
+                                x = nx;
+                                y = ny;
+                                correctPath.push({x, y});
+                                maze[y][x] = 0;
+                                moved = true;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if (!moved) break; // 无法继续，退出
                 }
                 
                 // 添加8-12个死胡同（确保不与其他路径相邻，且不从终点附近延伸）
