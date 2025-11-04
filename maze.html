@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>地狱版迷宫 - 椰椰电竞</title>
+    <title>迷宫游戏 - 椰椰电竞</title>
     <style>
         * {
             margin: 0;
@@ -165,6 +165,41 @@
             text-shadow: 0 0 10px rgba(255, 165, 0, 0.8);
         }
 
+        .game-rules {
+            background: linear-gradient(145deg, rgba(0, 40, 60, 0.3), rgba(0, 30, 50, 0.4));
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .rules-title {
+            font-size: 16px;
+            color: #ffa500;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(255, 165, 0, 0.8);
+        }
+
+        .rule-item {
+            font-size: 13px;
+            color: #a0d0e0;
+            line-height: 1.6;
+            margin: 6px 0;
+            padding-left: 8px;
+        }
+
+        .rule-highlight {
+            color: #00ff88;
+            font-weight: bold;
+            text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+        }
+
+        .rule-warning {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
         .controls {
             display: flex;
             flex-direction: column;
@@ -190,6 +225,8 @@
             transition: all 0.3s;
             box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
             text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .control-btn:hover:not(:disabled) {
@@ -282,6 +319,93 @@
             margin-bottom: 20px;
         }
 
+        .difficulty-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        }
+
+        .difficulty-modal.hidden {
+            display: none;
+        }
+
+        .difficulty-content {
+            background: linear-gradient(145deg, rgba(20, 25, 45, 0.98), rgba(15, 20, 35, 1));
+            border: 2px solid rgba(0, 255, 255, 0.5);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 
+                0 0 80px rgba(0, 255, 255, 0.4),
+                0 0 120px rgba(255, 165, 0, 0.2);
+            max-width: 600px;
+            width: 90%;
+        }
+
+        .difficulty-title {
+            font-size: 32px;
+            color: #00ffff;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+        }
+
+        .difficulty-options {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .difficulty-card {
+            background: linear-gradient(145deg, rgba(0, 60, 80, 0.4), rgba(0, 40, 60, 0.5));
+            border: 2px solid rgba(0, 255, 255, 0.5);
+            border-radius: 15px;
+            padding: 30px 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
+            flex: 1;
+            min-width: 220px;
+            text-align: center;
+        }
+
+        .difficulty-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 40px rgba(0, 255, 255, 0.6);
+            border-color: #ffa500;
+        }
+
+        .difficulty-card-title {
+            font-size: 24px;
+            color: #ffa500;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(255, 165, 0, 0.8);
+        }
+
+        .difficulty-card-info {
+            font-size: 14px;
+            color: #a0d0e0;
+            margin: 8px 0;
+        }
+
+        .difficulty-card-price {
+            font-size: 20px;
+            color: #00ff88;
+            font-weight: bold;
+            margin-top: 15px;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.8);
+        }
+
         @media (max-width: 1024px) {
             .bg-image {
                 max-width: 100%;
@@ -309,16 +433,51 @@
             .control-panel {
                 width: 100%;
             }
+
+            .game-rules {
+                padding: 12px;
+            }
+
+            .rules-title {
+                font-size: 14px;
+            }
+
+            .rule-item {
+                font-size: 12px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- 难度选择模态框 -->
+    <div class="difficulty-modal" id="difficultyModal">
+        <div class="difficulty-content">
+            <div class="difficulty-title">🎮 选择难度 🎮</div>
+            <div class="difficulty-options">
+                <div class="difficulty-card" onclick="selectDifficulty('normal')">
+                    <div class="difficulty-card-title">🗺️ 普通版</div>
+                    <div class="difficulty-card-info">📐 迷宫大小：10×10</div>
+                    <div class="difficulty-card-info">💰 价格：3888R</div>
+                    <div class="difficulty-card-info">💎 保底：8888W</div>
+                    <div class="difficulty-card-price">点击开始</div>
+                </div>
+                <div class="difficulty-card" onclick="selectDifficulty('hard')">
+                    <div class="difficulty-card-title">🔥 困难版</div>
+                    <div class="difficulty-card-info">📐 迷宫大小：15×15</div>
+                    <div class="difficulty-card-info">💰 价格：6888R</div>
+                    <div class="difficulty-card-info">💎 保底：13888W</div>
+                    <div class="difficulty-card-price">点击开始</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <img src="beijingtu.jpg" alt="椰椰电竞" class="bg-image">
 
     <div class="container">
         <div class="header">
-            <div class="title">🗺️ 迷宫探索 🗺️</div>
-            <div class="subtitle">10×10 迷宫闯关</div>
+            <div class="title">迷宫游戏</div>
+            <div class="subtitle" id="subtitle">请选择难度</div>
         </div>
 
         <div class="game-area">
@@ -342,7 +501,18 @@
                         <button class="control-btn" id="btnRight" onclick="move('right')">→</button>
                     </div>
                 </div>
-
+                <div class="game-rules">
+                    <div class="rules-title">📖 游戏说明</div>
+                    <div class="rule-item">🗺️ 迷宫随机生成，<span class="rule-highlight">有且仅有一条正解路线</span></div>
+                    <div class="rule-item">💎 游戏内摸到几格子红，可以走几步</div>
+                    <div class="rule-item">🔙 后退规则：</div>
+                    <div class="rule-item" style="padding-left: 20px;">
+                        • <span class="rule-highlight">普通版</span>：可后退 <span class="rule-warning">2/4/6</span> 步
+                    </div>
+                    <div class="rule-item" style="padding-left: 20px;">
+                        • <span class="rule-highlight">困难版</span>：可后退 <span class="rule-warning">5/8/10</span> 步
+                    </div>
+                </div>
                 <div class="info-section">
                     <div class="info-title">📊 游戏信息</div>
                     <div class="info-item">
@@ -376,13 +546,40 @@
     </div>
 
     <script>
-        const MAZE_SIZE = 10;
-        const CELL_SIZE = 30;
+        // 难度配置
+        const DIFFICULTY_CONFIG = {
+            normal: {
+                name: '普通版',
+                size: 10,
+                price: '3888R',
+                guarantee: '8888W',
+                targetSteps: { min: 18, max: 25 },
+                deadEnds: { min: 4, max: 6 },
+                deadEndLength: { min: 2, max: 6 },
+                excludeLastSteps: 5,
+                retreatSteps: [2, 4, 6]  // 可后退步数选项
+            },
+            hard: {
+                name: '困难版',
+                size: 15,
+                price: '6888R',
+                guarantee: '13888W',
+                targetSteps: { min: 45, max: 55 },
+                deadEnds: { min: 8, max: 12 },
+                deadEndLength: { min: 5, max: 10 },
+                excludeLastSteps: 2,
+                retreatSteps: [5, 8, 10]  // 可后退步数选项
+            }
+        };
+
+        let MAZE_SIZE = 10;
+        let CELL_SIZE = 30;
         const canvas = document.getElementById('mazeCanvas');
         const ctx = canvas.getContext('2d');
         const previewCanvas = document.getElementById('previewCanvas');
         const previewCtx = previewCanvas.getContext('2d');
 
+        let currentDifficulty = null;
         let maze = [];
         let playerPos = { x: 0, y: 0 };
         let exitPos = { x: MAZE_SIZE - 1, y: MAZE_SIZE - 1 };
@@ -393,6 +590,68 @@
         let shortestPathLength = 0;
         let correctPath = []; // 存储正确路径
         let gameEnded = false;
+
+        // 选择难度
+        function selectDifficulty(difficulty) {
+            currentDifficulty = difficulty;
+            const config = DIFFICULTY_CONFIG[difficulty];
+            
+            // 更新迷宫大小
+            MAZE_SIZE = config.size;
+            exitPos = { x: MAZE_SIZE - 1, y: MAZE_SIZE - 1 };
+            
+            // 根据迷宫大小调整格子大小（保持画布大小为300x300）
+            CELL_SIZE = Math.floor(300 / MAZE_SIZE);
+            
+            // 更新副标题
+            document.getElementById('subtitle').textContent = 
+                `${config.name} ${config.size}×${config.size} - 价格${config.price} 保底${config.guarantee}`;
+            
+            // 隐藏难度选择模态框
+            document.getElementById('difficultyModal').classList.add('hidden');
+            
+            // 生成迷宫
+            generateMaze();
+        }
+
+        // 检查某个位置是否可以安全地添加为路径（确保不会与其他路径相邻）
+        function canPlacePath(x, y, fromX, fromY) {
+            // 检查目标位置是否在边界内且是墙
+            if (x < 0 || x >= MAZE_SIZE || y < 0 || y >= MAZE_SIZE || maze[y][x] === 0) {
+                return false;
+            }
+            
+            // 检查四个方向的邻居（上下左右）
+            const directions = [
+                {dx: 0, dy: -1}, // 上
+                {dx: 1, dy: 0},  // 右
+                {dx: 0, dy: 1},  // 下
+                {dx: -1, dy: 0}  // 左
+            ];
+            
+            let pathCount = 0;
+            for (let dir of directions) {
+                const nx = x + dir.dx;
+                const ny = y + dir.dy;
+                
+                // 检查是否越界
+                if (nx < 0 || nx >= MAZE_SIZE || ny < 0 || ny >= MAZE_SIZE) continue;
+                
+                // 如果相邻位置是路径
+                if (maze[ny][nx] === 0) {
+                    // 如果是来源位置，这是允许的
+                    if (nx === fromX && ny === fromY) {
+                        pathCount++;
+                    } else {
+                        // 如果不是来源位置，则有其他路径相邻，无效
+                        return false;
+                    }
+                }
+            }
+            
+            // 必须恰好有一个相邻路径（来源位置），否则无效
+            return pathCount === 1;
+        }
 
         // BFS计算最短路径
         function findShortestPath() {
@@ -446,7 +705,8 @@
                 maze[y][x] = 0;
                 
                 // 使用深度优先搜索生成曲折路径
-                const targetSteps = 18 + Math.floor(Math.random() * 8); // 18-25步
+                const config = DIFFICULTY_CONFIG[currentDifficulty] || DIFFICULTY_CONFIG.normal;
+                const targetSteps = config.targetSteps.min + Math.floor(Math.random() * (config.targetSteps.max - config.targetSteps.min + 1));
                 let stepCount = 0;
                 let attempts = 0;
                 const maxAttempts = 1000;
@@ -581,62 +841,49 @@
                     if (!moved) break; // 无法继续，退出
                 }
                 
-                // 添加8-12个死胡同（确保不与其他路径相邻，且不从终点附近延伸）
-                const deadEndCount = 8 + Math.floor(Math.random() * 5); // 8-12个
-                for (let i = 0; i < deadEndCount; i++) {
+                // 添加死胡同（数量和长度根据难度配置）
+                const targetDeadEnds = config.deadEnds.min + Math.floor(Math.random() * (config.deadEnds.max - config.deadEnds.min + 1));
+                const deadEndPaths = []; // 存储所有死胡同路径点，用于后续分支
+                let successfulDeadEnds = 0;
+                let totalAttempts = 0;
+                const maxDeadEndAttempts = targetDeadEnds * 10; // 最多尝试次数
+                
+                while (successfulDeadEnds < targetDeadEnds && totalAttempts < maxDeadEndAttempts) {
+                    totalAttempts++;
+                    
                     // 从正确路径中随机选择一个点作为死胡同的起点
-                    // 排除终点和正确路径的最后5个点（让最后几步明显）
-                    const excludeLastSteps = Math.min(5, correctPath.length - 1);
+                    // 排除终点和正确路径的最后N个点（困难版排除更少，增加迷惑性）
+                    const excludeLastSteps = Math.min(config.excludeLastSteps, correctPath.length - 1);
                     const availablePoints = correctPath.slice(0, correctPath.length - excludeLastSteps);
                     
-                    if (availablePoints.length === 0) continue;
+                    if (availablePoints.length === 0) break;
                     
                     const startPoint = availablePoints[Math.floor(Math.random() * availablePoints.length)];
                     
-                    // 从这个点延伸3-5步的死胡同（限制在5步内）
-                    const deadEndSteps = 3 + Math.floor(Math.random() * 3);
+                    // 从这个点延伸死胡同（困难版延伸更长）
+                    const deadEndSteps = config.deadEndLength.min + Math.floor(Math.random() * (config.deadEndLength.max - config.deadEndLength.min + 1));
                     let dx = startPoint.x;
                     let dy = startPoint.y;
+                    const currentDeadEnd = [];
                     
                     for (let step = 0; step < deadEndSteps; step++) {
                         const directions = [];
                         
-                        // 找出可以延伸的方向（确保不会与现有路径相邻）
-                        // 向左
-                        if (dx > 1 && maze[dy][dx - 1] === 1) {
-                            let valid = true;
-                            // 检查周围是否有路径（除了起点）
-                            if (dy > 0 && maze[dy - 1][dx - 1] === 0) valid = false;
-                            if (dy < MAZE_SIZE - 1 && maze[dy + 1][dx - 1] === 0) valid = false;
-                            if (dx > 1 && maze[dy][dx - 2] === 0) valid = false;
-                            if (valid) directions.push({ddx: -1, ddy: 0});
-                        }
+                        // 检查四个方向，使用严格的验证函数
+                        const checkDirs = [
+                            {ddx: -1, ddy: 0}, // 左
+                            {ddx: 1, ddy: 0},  // 右
+                            {ddx: 0, ddy: -1}, // 上
+                            {ddx: 0, ddy: 1}   // 下
+                        ];
                         
-                        // 向右
-                        if (dx < MAZE_SIZE - 2 && maze[dy][dx + 1] === 1) {
-                            let valid = true;
-                            if (dy > 0 && maze[dy - 1][dx + 1] === 0) valid = false;
-                            if (dy < MAZE_SIZE - 1 && maze[dy + 1][dx + 1] === 0) valid = false;
-                            if (dx < MAZE_SIZE - 2 && maze[dy][dx + 2] === 0) valid = false;
-                            if (valid) directions.push({ddx: 1, ddy: 0});
-                        }
-                        
-                        // 向上
-                        if (dy > 1 && maze[dy - 1][dx] === 1) {
-                            let valid = true;
-                            if (dx > 0 && maze[dy - 1][dx - 1] === 0) valid = false;
-                            if (dx < MAZE_SIZE - 1 && maze[dy - 1][dx + 1] === 0) valid = false;
-                            if (dy > 1 && maze[dy - 2][dx] === 0) valid = false;
-                            if (valid) directions.push({ddx: 0, ddy: -1});
-                        }
-                        
-                        // 向下
-                        if (dy < MAZE_SIZE - 2 && maze[dy + 1][dx] === 1) {
-                            let valid = true;
-                            if (dx > 0 && maze[dy + 1][dx - 1] === 0) valid = false;
-                            if (dx < MAZE_SIZE - 1 && maze[dy + 1][dx + 1] === 0) valid = false;
-                            if (dy < MAZE_SIZE - 2 && maze[dy + 2][dx] === 0) valid = false;
-                            if (valid) directions.push({ddx: 0, ddy: 1});
+                        for (let dir of checkDirs) {
+                            const newX = dx + dir.ddx;
+                            const newY = dy + dir.ddy;
+                            
+                            if (canPlacePath(newX, newY, dx, dy)) {
+                                directions.push(dir);
+                            }
                         }
                         
                         if (directions.length > 0) {
@@ -644,16 +891,71 @@
                             dx += dir.ddx;
                             dy += dir.ddy;
                             maze[dy][dx] = 0;
-                } else {
+                            currentDeadEnd.push({x: dx, y: dy});
+                        } else {
                             break; // 无法继续延伸
+                        }
+                    }
+                    
+                    // 只保存至少有1格的死胡同
+                    if (currentDeadEnd.length >= 1) {
+                        deadEndPaths.push(currentDeadEnd);
+                        successfulDeadEnds++;
+                    }
+                }
+                
+                // 困难版：在死胡同上添加分支死胡同（增强迷惑性）
+                if (currentDifficulty === 'hard' && deadEndPaths.length > 0) {
+                    const branchCount = Math.floor(deadEndPaths.length / 3); // 三分之一的死胡同会有分支
+                    for (let b = 0; b < branchCount; b++) {
+                        const randomDeadEnd = deadEndPaths[Math.floor(Math.random() * deadEndPaths.length)];
+                        if (randomDeadEnd.length < 4) continue; // 太短的死胡同不分支
+                        
+                        // 只从死胡同的末端（最后一个点）延伸分支，避免路径相邻问题
+                        const branchPoint = randomDeadEnd[randomDeadEnd.length - 1];
+                        const branchLength = 2 + Math.floor(Math.random() * 3); // 2-4步，避免过长
+                        
+                        let bx = branchPoint.x;
+                        let by = branchPoint.y;
+                        
+                        for (let step = 0; step < branchLength; step++) {
+                            const directions = [];
+                            
+                            // 检查四个方向，使用严格的验证函数
+                            const checkDirs = [
+                                {ddx: -1, ddy: 0}, // 左
+                                {ddx: 1, ddy: 0},  // 右
+                                {ddx: 0, ddy: -1}, // 上
+                                {ddx: 0, ddy: 1}   // 下
+                            ];
+                            
+                            for (let dir of checkDirs) {
+                                const newX = bx + dir.ddx;
+                                const newY = by + dir.ddy;
+                                
+                                if (canPlacePath(newX, newY, bx, by)) {
+                                    directions.push(dir);
+                                }
+                            }
+                            
+                            if (directions.length > 0) {
+                                const dir = directions[Math.floor(Math.random() * directions.length)];
+                                bx += dir.ddx;
+                                by += dir.ddy;
+                                maze[by][bx] = 0;
+                            } else {
+                                break;
+                            }
                         }
                     }
                 }
                 
-                // 验证最短路径长度（目标22步）
+                // 验证最短路径长度
                 pathLength = findShortestPath();
+                const minPath = config.targetSteps.min + 4;
+                const maxPath = config.targetSteps.max + 1;
                 
-                if (pathLength >= 22 && pathLength <= 26) {
+                if (pathLength >= minPath && pathLength <= maxPath) {
                     break; // 找到符合要求的迷宫
                 }
                 
@@ -664,7 +966,18 @@
             
             // 初始化玩家位置
             playerPos = { x: 0, y: 0 };
-            explored[0][0] = true;
+            
+            // 初始探索玩家周围3x3范围
+            for (let dy = -1; dy <= 1; dy++) {
+                for (let dx = -1; dx <= 1; dx++) {
+                    const exploreX = 0 + dx;
+                    const exploreY = 0 + dy;
+                    if (exploreX >= 0 && exploreX < MAZE_SIZE && exploreY >= 0 && exploreY < MAZE_SIZE) {
+                        explored[exploreY][exploreX] = true;
+                    }
+                }
+            }
+            
             visitedCells.clear();
             visitedCells.add('0,0');
             moveHistory = [{ x: 0, y: 0 }];
@@ -672,27 +985,6 @@
             
             updateInfo();
             drawMaze();
-        }
-
-        // 获取可移动方向（下一步提示）
-        function getNextStepHints() {
-            const directions = [
-                { dx: 0, dy: -1 },
-                { dx: 1, dy: 0 },
-                { dx: 0, dy: 1 },
-                { dx: -1, dy: 0 }
-            ];
-            
-            const hints = [];
-            for (let dir of directions) {
-                const newX = playerPos.x + dir.dx;
-                const newY = playerPos.y + dir.dy;
-                
-                if (newX >= 0 && newX < MAZE_SIZE && newY >= 0 && newY < MAZE_SIZE && maze[newY][newX] === 0) {
-                    hints.push({ x: newX, y: newY });
-                }
-            }
-            return hints;
         }
 
         // 绘制迷宫
@@ -708,62 +1000,61 @@
                     if (explored[y][x]) {
                         // 已探索区域
                         if (maze[y][x] === 1) {
-                            // 墙壁 - 深灰色
-                            ctx.fillStyle = '#4a4a4a';
+                            // 墙壁 - 深蓝色
+                            ctx.fillStyle = '#1a2540';
                         } else {
                             // 已探索路径 - 白色
                             ctx.fillStyle = '#ffffff';
                         }
                         ctx.fillRect(px, py, CELL_SIZE, CELL_SIZE);
-                        ctx.strokeStyle = '#cccccc';
+                        ctx.strokeStyle = '#666666';
                         ctx.lineWidth = 1;
                         ctx.strokeRect(px, py, CELL_SIZE, CELL_SIZE);
                     } else {
-                        // 未探索区域 - 淡粉色
-                        ctx.fillStyle = '#ffb6c1';
+                        // 未探索区域 - 灰色
+                        ctx.fillStyle = '#808080';
                         ctx.fillRect(px, py, CELL_SIZE, CELL_SIZE);
-                        ctx.strokeStyle = '#ff69b4';
+                        ctx.strokeStyle = '#555555';
                         ctx.lineWidth = 1;
                         ctx.strokeRect(px, py, CELL_SIZE, CELL_SIZE);
                     }
                 }
             }
             
-            // 绘制下一步提示（可走的格子）
-            const nextSteps = getNextStepHints();
-            for (let step of nextSteps) {
-                const px = step.x * CELL_SIZE;
-                const py = step.y * CELL_SIZE;
-                ctx.fillStyle = 'rgba(0, 255, 0, 0.3)';
-                ctx.fillRect(px, py, CELL_SIZE, CELL_SIZE);
-                ctx.strokeStyle = '#00ff00';
-                ctx.lineWidth = 2;
-                ctx.strokeRect(px, py, CELL_SIZE, CELL_SIZE);
-            }
-            
-            // 绘制起点门（左开门emoji）
+            // 绘制起点门（左开门emoji）- 高亮显示
             if (playerPos.x !== 0 || playerPos.y !== 0) {
                 ctx.font = '20px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
+                ctx.shadowColor = '#00ffff';
+                ctx.shadowBlur = 10;
                 ctx.fillText('🚪', 0 * CELL_SIZE + CELL_SIZE / 2, 0 * CELL_SIZE + CELL_SIZE / 2);
+                ctx.shadowBlur = 0;
             }
             
-            // 绘制出口门（右开门emoji）
+            // 绘制出口门（右开门emoji）- 高亮显示
             if (explored[MAZE_SIZE - 1][MAZE_SIZE - 1]) {
                 ctx.font = '20px Arial';
+                ctx.shadowColor = '#ffa500';
+                ctx.shadowBlur = 10;
                 ctx.fillText('🚪', (MAZE_SIZE - 1) * CELL_SIZE + CELL_SIZE / 2, (MAZE_SIZE - 1) * CELL_SIZE + CELL_SIZE / 2);
+                ctx.shadowBlur = 0;
             }
             
-            // 绘制玩家位置：小人emoji + 椰子emoji
+            // 绘制玩家位置：小人emoji + 椰子emoji - 高亮显示
             ctx.font = '20px Arial';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            // 先绘制椰子（底层）
+            // 先绘制椰子（底层）- 橙色光晕
+            ctx.shadowColor = '#ffa500';
+            ctx.shadowBlur = 15;
             ctx.fillText('🥥', playerPos.x * CELL_SIZE + CELL_SIZE / 2, playerPos.y * CELL_SIZE + CELL_SIZE / 2);
-            // 再绘制小人（上层，稍微偏移）
+            // 再绘制小人（上层，稍微偏移）- 青色光晕
             ctx.font = '18px Arial';
+            ctx.shadowColor = '#00ffff';
+            ctx.shadowBlur = 15;
             ctx.fillText('🏃', playerPos.x * CELL_SIZE + CELL_SIZE / 2 + 8, playerPos.y * CELL_SIZE + CELL_SIZE / 2 - 6);
+            ctx.shadowBlur = 0;
         }
 
         // 绘制迷宫全图预览（游戏结束后显示）
@@ -835,14 +1126,25 @@
             // 移动成功
             playerPos.x = newX;
             playerPos.y = newY;
-            explored[newY][newX] = true;
+            
+            // 探索玩家周围3x3范围（9格）
+            for (let dy = -1; dy <= 1; dy++) {
+                for (let dx = -1; dx <= 1; dx++) {
+                    const exploreX = newX + dx;
+                    const exploreY = newY + dy;
+                    if (exploreX >= 0 && exploreX < MAZE_SIZE && exploreY >= 0 && exploreY < MAZE_SIZE) {
+                        explored[exploreY][exploreX] = true;
+                    }
+                }
+            }
+            
             moveHistory.push({ x: newX, y: newY });
             
             // 仅统计未走过的格子
             const cellKey = `${newX},${newY}`;
             if (!visitedCells.has(cellKey)) {
                 visitedCells.add(cellKey);
-            steps++;
+                steps++;
             }
             
             // 检查是否到达出口
@@ -889,15 +1191,17 @@
             if (confirm('确定要开始新游戏吗？当前进度将丢失！')) {
                 gameEnded = false;
                 document.getElementById('previewContainer').style.display = 'none';
-                generateMaze();
-                showMessage('🎮 新游戏开始', '迷宫已重新生成，祝你好运！');
+                document.getElementById('subtitle').textContent = '请选择难度';
+                document.getElementById('difficultyModal').classList.remove('hidden');
             }
         }
 
         // 导出存档
         function exportGame() {
             const saveData = {
-                version: '3.0',
+                version: '4.0',
+                difficulty: currentDifficulty,
+                mazeSize: MAZE_SIZE,
                 maze: maze,
                 playerPos: playerPos,
                 exitPos: exitPos,
@@ -938,6 +1242,21 @@
                 reader.onload = (event) => {
                     try {
                         const saveData = JSON.parse(event.target.result);
+                        
+                        // 恢复难度配置
+                        currentDifficulty = saveData.difficulty || 'normal';
+                        MAZE_SIZE = saveData.mazeSize || saveData.maze.length;
+                        CELL_SIZE = Math.floor(300 / MAZE_SIZE);
+                        
+                        // 更新副标题
+                        const config = DIFFICULTY_CONFIG[currentDifficulty];
+                        if (config) {
+                            document.getElementById('subtitle').textContent = 
+                                `${config.name} ${config.size}×${config.size} - 价格${config.price} 保底${config.guarantee}`;
+                        }
+                        
+                        // 隐藏难度选择模态框
+                        document.getElementById('difficultyModal').classList.add('hidden');
                         
                         maze = saveData.maze;
                         playerPos = saveData.playerPos;
@@ -1001,8 +1320,8 @@
             }
         });
 
-        // 初始化游戏
-        generateMaze();
+        // 页面加载完成后，等待用户选择难度
+        // 不再自动生成迷宫
     </script>
 </body>
 </html>
