@@ -235,31 +235,6 @@
             color: #00ff88;
         }
 
-        .back-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid #00ffff;
-            color: #00ffff;
-            padding: 10px 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: all 0.3s;
-            z-index: 1000;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
-        }
-
-        .back-btn:hover {
-            background: rgba(0, 255, 255, 0.2);
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
-            border-color: #ffa500;
-            color: #ffa500;
-        }
-
         .message {
             position: fixed;
             top: 50%;
@@ -339,7 +314,6 @@
 </head>
 <body>
     <img src="beijingtu.jpg" alt="椰椰电竞" class="bg-image">
-    <button class="back-btn" onclick="location.href='index.html'">← 返回首页</button>
 
     <div class="container">
         <div class="header">
@@ -358,6 +332,18 @@
 
             <div class="control-panel">
                 <div class="info-section">
+                    <div class="info-title">🎮 方向控制</div>
+                    <div class="direction-pad">
+                        <div></div>
+                        <button class="control-btn" id="btnUp" onclick="move('up')">↑</button>
+                        <div></div>
+                        <button class="control-btn" id="btnLeft" onclick="move('left')">←</button>
+                        <button class="control-btn" id="btnDown" onclick="move('down')">↓</button>
+                        <button class="control-btn" id="btnRight" onclick="move('right')">→</button>
+                    </div>
+                </div>
+
+                <div class="info-section">
                     <div class="info-title">📊 游戏信息</div>
                     <div class="info-item">
                         <span class="info-label">👣 已走步数:</span>
@@ -373,22 +359,11 @@
                     </div>
                 </div>
 
-                <div class="info-section">
-                    <div class="info-title">🎮 方向控制</div>
-                    <div class="direction-pad">
-                        <div></div>
-                        <button class="control-btn" id="btnUp" onclick="move('up')">↑</button>
-                        <div></div>
-                        <button class="control-btn" id="btnLeft" onclick="move('left')">←</button>
-                        <button class="control-btn" id="btnDown" onclick="move('down')">↓</button>
-                        <button class="control-btn" id="btnRight" onclick="move('right')">→</button>
-                    </div>
-                </div>
-
                 <div class="controls">
                     <button class="action-btn" onclick="newGame()">🎲 新游戏</button>
                     <button class="action-btn success" onclick="exportGame()">💾 导出存档</button>
                     <button class="action-btn success" onclick="importGame()">📂 导入存档</button>
+                    <button class="action-btn" onclick="location.href='index.html'">🏠 返回首页</button>
                 </div>
             </div>
         </div>
