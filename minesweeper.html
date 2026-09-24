@@ -6,7 +6,8 @@
     <title>椰椰电竞 - 三角洲专属趣味单</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="theme.css">
     <style>
         * {
             margin: 0;
@@ -331,8 +332,22 @@
         }
 
         .cell.empty {
-            background: linear-gradient(145deg, rgba(15, 20, 35, 0.4), rgba(10, 15, 30, 0.5));
-            border-color: rgba(80, 80, 100, 0.3);
+            background: linear-gradient(145deg, rgba(255, 240, 247, 0.95), rgba(255, 227, 238, 0.95));
+            border-color: rgba(242, 138, 178, 0.35);
+            color: #d86c9a;
+            font-size: 18px;
+            font-weight: 900;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.95);
+        }
+
+        .cell.empty::after {
+            content: '·';
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
         }
 
         /* 信息区域 */
@@ -557,7 +572,7 @@
     </style>
 </head>
 <body>
-    <img src="beijingtu.jpg" alt="椰椰电竞" class="bg-image">
+    <img src="微信图片_20260617232637_626_31.jpg" alt="椰椰电竞" class="bg-image">
     <div class="container">
         <div class="header">
             <div class="title">椰椰电竞</div>
@@ -568,7 +583,7 @@
         <!-- 开始界面 -->
         <div class="start-screen" id="startScreen">
             <div style="text-align: center; margin-bottom: 20px;">
-                <button class="btn btn-secondary" onclick="location.href='index.html'" style="font-size: 14px; padding: 10px 20px; margin-right: 10px;">
+                <button class="btn btn-secondary" onclick="location.href='games.html'" style="font-size: 14px; padding: 10px 20px; margin-right: 10px;">
                     🏠 返回游戏合集
                 </button>
                 <button class="btn" onclick="importGameData()" style="font-size: 14px; padding: 10px 20px;">
@@ -759,7 +774,7 @@
             } else if (value === 0) {
                 // 空白格
                 cell.classList.add('empty');
-                cell.innerHTML = '';
+                cell.innerHTML = '&nbsp;';
                 gameState.emptyCount++;
                 updateStats();
             } else {
@@ -816,7 +831,7 @@
                         cell.innerHTML = '💣';
                     } else if (value === 0) {
                         cell.classList.add('empty');
-                        cell.innerHTML = '';
+                        cell.innerHTML = '&nbsp;';
                     } else {
                         cell.classList.add('number');
                         cell.innerHTML = value;
@@ -924,7 +939,7 @@
                                     cell.innerHTML = '💣';
                                 } else if (value === 0) {
                                     cell.classList.add('empty');
-                                    cell.innerHTML = '';
+                                    cell.innerHTML = '&nbsp;';
                                 } else {
                                     cell.classList.add('number');
                                     cell.innerHTML = value;

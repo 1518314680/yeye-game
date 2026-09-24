@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>椰椰电竞 · 幸运转盘</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --ink:#75475d; --pink:#cf4d84; --soft:#93697e; }
+        * { box-sizing:border-box; }
+        body { margin:0; min-height:100vh; font-family:"Baloo 2","Microsoft YaHei",sans-serif; color:var(--ink); background:radial-gradient(circle at 12% 5%,#fff 0,transparent 32%),radial-gradient(circle at 90% 12%,#ffd8e8 0,transparent 35%),linear-gradient(155deg,#fff8fb,#ffe5ef); }
+        .page { max-width:1120px; margin:auto; padding:28px 20px 64px; }
+        .back { color:var(--pink); text-decoration:none; font-weight:700; }
+        header { text-align:center; margin:24px 0 30px; }
+        h1 { color:#c93f7a; font-size:clamp(2rem,6vw,3.3rem); margin:0; }
+        .lead { margin:4px 0 0; font-size:1.1rem; }
+        .layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(290px,.8fr); gap:26px; align-items:start; }
+        .panel { background:#ffffffdf; border:1px solid white; border-radius:28px; box-shadow:0 18px 45px #df86aa2e; padding:28px; }
+        .wheel-panel { text-align:center; }
+        .wheel-wrap { position:relative; width:min(100%,480px); margin:0 auto 22px; padding:14px; border-radius:50%; background:linear-gradient(135deg,#ffdb8a,#e98baf,#ffd288); box-shadow:0 14px 32px #b8507e45,inset 0 0 0 5px #fff6; }
+        #wheel { width:100%; height:auto; display:block; border-radius:50%; transition:transform 5s cubic-bezier(.14,.78,.12,1); }
+        .pointer { position:absolute; left:50%; top:4px; transform:translateX(-50%); z-index:2; width:0; height:0; border-left:17px solid transparent; border-right:17px solid transparent; border-top:34px solid #a92c62; filter:drop-shadow(0 3px 2px #90375a66); }
+        .wheel-center { position:absolute; width:16%; aspect-ratio:1; border-radius:50%; left:50%; top:50%; transform:translate(-50%,-50%); background:linear-gradient(#fff3c8,#ffd681); border:6px solid white; box-shadow:0 3px 12px #9a366b88; pointer-events:none; }
+        .tip { font-size:.94rem; margin:0; color:var(--soft); }
+        h2 { margin:0 0 13px; color:#bd3d74; font-size:1.45rem; }
+        label { display:block; font-weight:700; margin-bottom:7px; }
+        input { width:100%; border:2px solid #f3c8d8; border-radius:13px; padding:13px 15px; font:inherit; color:#63354b; outline:none; background:#fff; }
+        input:focus { border-color:#df6b9b; box-shadow:0 0 0 3px #f9dce9; }
+        button { width:100%; border:0; border-radius:13px; background:linear-gradient(110deg,#e85f99,#cf3f7b); box-shadow:0 8px 18px #d76a964d; color:white; font:inherit; font-size:1.15rem; font-weight:800; cursor:pointer; padding:12px; margin-top:15px; }
+        button:disabled { opacity:.6; cursor:wait; }
+        .result { min-height:67px; margin-top:18px; padding:12px; border-radius:13px; background:#fff2f7; text-align:center; line-height:1.55; }
+        .result strong { color:#b93070; font-size:1.3rem; }
+        .draw-note { margin:12px 0 0; color:var(--soft); font-size:.92rem; }
+        .lookup { margin-top:24px; }
+        .lookup-note { margin:8px 0 0; color:var(--soft); font-size:.92rem; }
+        .dialog { width:min(92vw,430px); max-height:85vh; border:1px solid #fff; border-radius:22px; padding:28px; color:var(--ink); background:#fff8fb; box-shadow:0 20px 60px #6d305b77; text-align:center; }
+        .dialog::backdrop { background:#3d1b37a8; }
+        .dialog h2 { margin:0 30px 12px; }
+        .dialog .close { position:absolute; top:9px; right:14px; width:auto; margin:0; padding:2px 10px; border:0; background:none; box-shadow:none; color:#a75d80; font-size:1.8rem; line-height:1; }
+        .dialog-prize { font-size:1.3rem; font-weight:800; color:#b93070; margin:10px 0 2px; }
+        .dialog-code { margin:16px 0 0; padding:12px; border:1px dashed #eaa9c4; border-radius:12px; background:#fff; overflow-wrap:anywhere; font-weight:700; }
+        .dialog-hint { margin:12px 0 0; font-size:.92rem; color:var(--soft); }
+        .dialog-time { margin:10px 0 0; font-size:.95rem; color:var(--soft); }
+        .prizes { margin-top:24px; }
+        .prize-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:11px; }
+        .prize { border:1px solid #f4d5e1; border-radius:14px; background:#fffafd; padding:11px 12px; min-height:105px; }
+        .prize strong { display:block; color:#b93971; font-size:1.05rem; }
+        .prize span { display:block; line-height:1.45; }
+        .prize small { color:#966b80; }
+        .prize.inactive { background:#f7f3f5; }
+        .prize.inactive strong { color:#8c6d7e; }
+        .rules { margin-top:24px; padding:18px 22px; font-size:.95rem; }
+        .rules h2 { font-size:1.2rem; margin-bottom:7px; }
+        .rules p { margin:6px 0; }
+        @media (max-width:800px) { .layout { grid-template-columns:1fr; } .panel { padding:22px; } }
+        @media (max-width:420px) { .prize-grid { grid-template-columns:1fr; } }
+        @media (prefers-reduced-motion:reduce) { #wheel { transition-duration:3s; } }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <a class="back" href="index.html">← 返回首页</a>
+        <header><h1>幸运抽奖转盘</h1><p class="lead">输入一张兑奖券码，开启一次抽奖</p></header>
+        <div class="layout">
+            <section class="panel wheel-panel" aria-label="抽奖转盘">
+                <div class="wheel-wrap"><div class="pointer" aria-hidden="true"></div><canvas id="wheel" width="720" height="720" aria-label="奖项转盘"></canvas><div class="wheel-center"></div></div>
+                <p class="tip">扇区大小仅供展示，实际中奖概率见下方规则。抽奖结果由服务器决定。</p>
+            </section>
+            <div>
+                <section class="panel">
+                    <h2>使用兑奖券</h2>
+                    <form id="drawForm">
+                        <label for="voucherCode">兑奖券码</label>
+                        <input id="voucherCode" name="voucherCode" placeholder="YY-XXXXX-XXXXX-XXXXX-XXXXX" autocomplete="off" spellcheck="false" required>
+                        <button id="drawButton" type="submit">开始抽奖</button>
+                    </form>
+                    <p id="drawStatus" class="draw-note" role="status"></p>
+                    <div id="result" class="result" role="status" aria-live="polite">每张有效兑奖券限抽一次。</div>
+                </section>
+                <section class="panel lookup">
+                    <h2>抽奖记录查询</h2>
+                    <form id="recordForm">
+                        <label for="recordCode">输入抽奖码核验结果</label>
+                        <input id="recordCode" name="recordCode" placeholder="YY-XXXXX-XXXXX-XXXXX-XXXXX" autocomplete="off" spellcheck="false" required>
+                        <button id="recordButton" type="submit">查询记录</button>
+                    </form>
+                    <p class="lookup-note" id="lookupStatus" role="status" aria-live="polite">未抽奖的有效抽奖码会显示“该抽奖码还未使用”。</p>
+                </section>
+                <section class="panel prizes"><h2>奖项一览</h2><div id="prizeGrid" class="prize-grid"></div></section>
+            </div>
+        </div>
+        <section class="panel rules">
+            <h2>抽奖规则</h2>
+            <p>活动时间：2026年9月25日 - 10月7日</p>
+            <p>活动期间下单+200W保底(玩法单/体验单不可用)</p>
+            <p>订单结束后给客服反馈即可获取抽奖码</p>
+            <p>1.兌奖规则:中奖发截图给客服核销即可立即兌奖</p>
+            <p>2.续单立减卷可下任意单/福利活动单使用</p>
+            <p>3.最终解释权由椰椰电竞负责</p>
+        </section>
+    </main>
+    <dialog id="recordDialog" class="dialog" aria-labelledby="dialogTitle">
+        <button id="dialogClose" class="close" type="button" aria-label="关闭">×</button>
+        <h2 id="dialogTitle"></h2>
+        <div id="dialogPrize" class="dialog-prize"></div>
+        <div id="dialogDescription"></div>
+        <div id="dialogTime" class="dialog-time"></div>
+        <div id="dialogCode" class="dialog-code"></div>
+        <p id="dialogHint" class="dialog-hint"></p>
+    </dialog>
+    <script>
+        const prizes = [
+            {code:'first',name:'一等奖',description:'888元现金',quota:2,initialRate:0},
+            {code:'second',name:'二等奖',description:'328/288免单',quota:4,initialRate:0},
+            {code:'third',name:'三等奖',description:'88元现金',quota:6,initialRate:5},
+            {code:'fourth',name:'四等奖',description:'50元现金',quota:10,initialRate:10},
+            {code:'fifth',name:'五等奖',description:'续单20元立减券',quota:20,initialRate:25},
+            {code:'thanks',name:'谢谢惠顾',description:'下次好运',quota:null,initialRate:60}
+        ];
+        const colors = ['#f7d9e5','#f9e4ed','#f6d6e4','#ed8bb3','#f6adca','#ffe1b2'];
+        const canvas = document.getElementById('wheel');
+        const ctx = canvas.getContext('2d');
+        const center = canvas.width / 2;
+        const sector = 2 * Math.PI / prizes.length;
+        prizes.forEach((prize,index) => {
+            const start = -Math.PI / 2 + index * sector;
+            const middle = start + sector / 2;
+            ctx.beginPath(); ctx.moveTo(center,center); ctx.arc(center,center,center-8,start,start+sector); ctx.closePath();
+            ctx.fillStyle = colors[index]; ctx.fill(); ctx.strokeStyle = '#fff8fb'; ctx.lineWidth = 6; ctx.stroke();
+            ctx.fillStyle = index < 3 ? '#8a6d7d' : '#994166';
+            ctx.font = 'bold 30px "Microsoft YaHei", sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText(prize.name,center+Math.cos(middle)*232,center+Math.sin(middle)*232,145);
+        });
+
+        const grid = document.getElementById('prizeGrid');
+        const result = document.getElementById('result');
+        const button = document.getElementById('drawButton');
+        const dialog = document.getElementById('recordDialog');
+        const recordButton = document.getElementById('recordButton');
+        const lookupStatus = document.getElementById('lookupStatus');
+        const drawStatus = document.getElementById('drawStatus');
+        let rotation = 0;
+        let spinning = false;
+
+        function updateDrawStatus() {
+            button.disabled = spinning;
+            drawStatus.textContent = '持有效且未使用的兑奖码即可抽奖，每张限用一次。';
+        }
+
+        function formatDrawTime(value) {
+            return new Intl.DateTimeFormat('zh-CN',{
+                timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit',
+                hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false
+            }).format(new Date(value));
+        }
+
+        document.getElementById('dialogClose').addEventListener('click',() => dialog.close());
+        dialog.addEventListener('click',event => { if (event.target === dialog) dialog.close(); });
+
+        function showRecord(data,fromDraw) {
+            const unused = data.status === 'unused';
+            const thanks = data.prizeCode === 'thanks';
+            document.getElementById('dialogTitle').textContent = unused ? '该抽奖码还未使用' : fromDraw ? (thanks ? '谢谢惠顾' : '恭喜中奖！') : '抽奖记录';
+            document.getElementById('dialogPrize').textContent = unused ? '' : data.prizeName;
+            document.getElementById('dialogDescription').textContent = unused ? '' : data.description;
+            document.getElementById('dialogTime').textContent = unused ? '尚未抽奖' : `抽奖时间：${formatDrawTime(data.drawnAt)}`;
+            document.getElementById('dialogCode').textContent = `${!unused && !thanks ? '兑换码（即抽奖码）' : '抽奖码'}：${data.voucherCode}`;
+            document.getElementById('dialogHint').textContent = unused ? '该码尚有一次抽奖机会。' : thanks ? '此抽奖码已使用，本次未中奖。' : '请将此码提供给客服核验奖品。';
+            if (!dialog.open) dialog.showModal();
+        }
+
+        function renderPrizes(items) {
+            grid.replaceChildren();
+            items.forEach(prize => {
+                const card = document.createElement('div');
+                card.className = 'prize';
+                const name = document.createElement('strong'); name.textContent = prize.name;
+                const reward = document.createElement('span'); reward.textContent = prize.description;
+                const detail = document.createElement('small');
+                card.append(name,reward,detail); grid.appendChild(card);
+            });
+        }
+
+        async function refreshPrizes() {
+            const response = await fetch('/api/lottery/prizes',{cache:'no-store'});
+            if (!response.ok) throw new Error('奖项信息暂时无法获取');
+            renderPrizes((await response.json()).prizes);
+        }
+
+        function spinTo(code) {
+            const index = prizes.findIndex(prize => prize.code === code);
+            if (index < 0) throw new Error('抽奖结果无法显示');
+            const target = (360-(index+.5)*360/prizes.length)%360;
+            const reducedMotion = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+            const turns = reducedMotion ? 3 : 5;
+            const duration = 3000;
+            rotation += turns*360 + ((target-rotation%360+360)%360);
+            canvas.style.transitionDuration = `${duration}ms`;
+            canvas.style.transform = `rotate(${rotation}deg)`;
+            return duration;
+        }
+
+        document.getElementById('drawForm').addEventListener('submit',async event => {
+            event.preventDefault();
+            if (spinning) return;
+            spinning = true; button.disabled = true; result.textContent = '正在核验兑奖券并抽奖…';
+            try {
+                const response = await fetch('/api/lottery/draw',{
+                    method:'POST',headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify({voucherCode:document.getElementById('voucherCode').value.trim()})
+                });
+                const data = await response.json().catch(() => ({error:response.status === 429 ? '操作过于频繁，请稍后再试' : '抽奖服务暂时不可用'}));
+                if (!response.ok) throw new Error(data.error || '抽奖失败，请稍后重试');
+                result.textContent = '转盘旋转中…';
+                await new Promise(resolve => setTimeout(resolve,spinTo(data.prizeCode)));
+                result.textContent = `${data.prizeName}${data.replayed ? ' · 此码已抽过，展示原结果' : ''}`;
+                showRecord(data,true);
+                try { await refreshPrizes(); } catch (_) { /* The saved draw still stands. */ }
+            } catch (error) { result.textContent = error.message || '抽奖服务暂时不可用'; }
+            finally { spinning = false; updateDrawStatus(); }
+        });
+
+        document.getElementById('recordForm').addEventListener('submit',async event => {
+            event.preventDefault();
+            recordButton.disabled = true;
+            lookupStatus.textContent = '正在查询…';
+            try {
+                const response = await fetch('/api/lottery/record',{
+                    method:'POST',headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify({voucherCode:document.getElementById('recordCode').value.trim()})
+                });
+                const data = await response.json().catch(() => ({error:response.status === 429 ? '操作过于频繁，请稍后再试' : '查询服务暂时不可用'}));
+                if (!response.ok) throw new Error(data.error || '查询失败，请稍后再试');
+                lookupStatus.textContent = data.status === 'unused' ? '该抽奖码还未使用' : `已找到抽奖记录 · ${formatDrawTime(data.drawnAt)}`;
+                showRecord(data,false);
+            } catch (error) { lookupStatus.textContent = error.message || '查询服务暂时不可用'; }
+            finally { recordButton.disabled = false; }
+        });
+
+        renderPrizes(prizes);
+        updateDrawStatus();
+        refreshPrizes().catch(() => { result.textContent = '抽奖服务尚未连接，请稍后再试。'; });
+    </script>
+</body>
+</html>

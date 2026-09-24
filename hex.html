@@ -6,7 +6,8 @@
     <title>海克斯游戏 - 椰椰电竞</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="theme.css">
     <style>
         * {
             margin: 0;
@@ -746,6 +747,29 @@
             transform: none;
         }
 
+        .back-games {
+            display: block;
+            min-height: 42px;
+            margin: 0 auto 28px;
+            padding: 0 22px;
+            border: 1px solid rgba(0, 255, 255, 0.45);
+            border-radius: 8px;
+            background: rgba(0, 50, 70, 0.55);
+            color: #c0f8ff;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            transition: all 0.25s ease;
+            box-shadow: 0 0 14px rgba(0, 255, 255, 0.18);
+        }
+
+        .back-games:hover {
+            border-color: rgba(255, 165, 0, 0.9);
+            background: rgba(255, 165, 0, 0.15);
+            color: #ffa500;
+        }
+
         .animation-toggle {
             display: flex;
             align-items: center;
@@ -987,13 +1011,15 @@
     </style>
 </head>
 <body>
-    <img src="beijingtu.jpg" alt="椰椰电竞" class="bg-image">
+    <img src="微信图片_20260617232637_626_31.jpg" alt="椰椰电竞" class="bg-image">
 
     <div class="container">
         <div class="header">
             <div class="title">海克斯游戏</div>
             <div class="subtitle">抽取不同的海克斯 - 开启你的欧皇三角洲之旅吧</div>
         </div>
+
+        <button class="back-games" type="button" onclick="location.href='games.html'">🏠 返回游戏合集</button>
 
         <div class="game-rules">
             <h4>🎮 游戏说明</h4>

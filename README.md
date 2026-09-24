@@ -42,6 +42,10 @@
 
 ## 🚀 快速开始
 
+### 幸运抽奖转盘
+
+首页已添加 `lottery.html` 入口。此功能使用一次性兑奖券、服务端抽奖及 SQLite 库存记录，不能仅靠 GitHub Pages 运行。部署与发券说明见 [deploy/LOTTERY.md](deploy/LOTTERY.md)。
+
 ### 方式一：在线访问（推荐）
 
 访问 GitHub Pages 部署的在线版本（见上方链接）

@@ -13,6 +13,7 @@ desktop.ini
 # Python
 __pycache__/
 *.py[cod]
+lottery_backend/data/
 *.so
 .Python
 env/

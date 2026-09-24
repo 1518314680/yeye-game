@@ -1,0 +1,21 @@
+services:
+  lottery-api:
+    build:
+      context: ..
+      dockerfile: lottery_backend/Dockerfile
+    volumes:
+      - lottery_data:/data
+    networks:
+      yeye-lottery:
+        aliases:
+          - lottery-api
+    restart: unless-stopped
+
+networks:
+  yeye-lottery:
+    external: true
+    name: yeye-lottery
+
+volumes:
+  lottery_data:
+    name: yeye_lottery_data

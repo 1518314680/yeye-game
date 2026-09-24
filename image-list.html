@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>椰椰电竞 - 图片菜单</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="theme.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Orbitron", "Microsoft YaHei", Arial, sans-serif;
+            background: #0a0e1a;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 165, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(138, 43, 226, 0.08) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .bg-image {
+            width: 100%;
+            max-width: 1400px;
+            height: auto;
+            display: block;
+            margin: 0 auto 20px;
+            border-radius: 10px;
+            box-shadow:
+                0 0 30px rgba(0, 255, 255, 0.4),
+                0 0 60px rgba(138, 43, 226, 0.3),
+                0 0 100px rgba(255, 165, 0, 0.2);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            position: relative;
+            z-index: 2;
+        }
+
+        .container {
+            background: linear-gradient(145deg, rgba(20, 25, 45, 0.95), rgba(15, 20, 35, 0.98));
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow:
+                0 0 60px rgba(0, 255, 255, 0.4),
+                0 0 100px rgba(138, 43, 226, 0.3),
+                inset 0 0 80px rgba(0, 0, 0, 0.4);
+            max-width: 1400px;
+            width: 100%;
+            border: 2px solid rgba(0, 255, 255, 0.4);
+            position: relative;
+            z-index: 2;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 34px;
+        }
+
+        .title {
+            font-size: 48px;
+            font-weight: 900;
+            background: linear-gradient(90deg, #00ffff, #8a2be2, #ffa500, #00ffff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: 4px;
+            filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.9));
+        }
+
+        .subtitle {
+            font-size: 24px;
+            color: #00ffff;
+            font-weight: bold;
+            text-shadow:
+                0 0 15px rgba(0, 255, 255, 0.9),
+                0 0 30px rgba(138, 43, 226, 0.6);
+            letter-spacing: 3px;
+        }
+
+        .button-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .menu-button,
+        .back-button {
+            min-height: 42px;
+            border: 1px solid rgba(0, 255, 255, 0.45);
+            border-radius: 8px;
+            background: rgba(0, 50, 70, 0.55);
+            color: #c0f8ff;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 700;
+            letter-spacing: 0;
+            transition: all 0.25s ease;
+            box-shadow: 0 0 14px rgba(0, 255, 255, 0.18);
+        }
+
+        .menu-button {
+            padding: 0 18px;
+            font-size: 15px;
+        }
+
+        .back-button {
+            margin-top: 26px;
+            padding: 0 22px;
+            font-size: 14px;
+        }
+
+        .menu-button:hover,
+        .back-button:hover {
+            border-color: rgba(255, 165, 0, 0.9);
+            background: rgba(255, 165, 0, 0.15);
+            color: #ffa500;
+            box-shadow:
+                0 0 18px rgba(255, 165, 0, 0.35),
+                0 0 30px rgba(138, 43, 226, 0.18);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0, 255, 255, 0.3);
+            color: #888;
+            font-size: 12px;
+        }
+
+        .fullscreen-viewer {
+            position: fixed;
+            inset: 0;
+            z-index: 20;
+            display: none;
+            flex-direction: column;
+            padding: 24px;
+            background: rgba(0, 0, 0, 0.92);
+        }
+
+        .fullscreen-viewer.active {
+            display: flex;
+        }
+
+        .viewer-toolbar {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding-bottom: 16px;
+        }
+
+        .viewer-button {
+            min-width: 44px;
+            min-height: 40px;
+            border: 1px solid rgba(0, 255, 255, 0.45);
+            border-radius: 8px;
+            background: rgba(0, 50, 70, 0.82);
+            color: #c0f8ff;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 18px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        .viewer-button:hover {
+            border-color: rgba(255, 165, 0, 0.9);
+            color: #ffa500;
+        }
+
+        .viewer-stage {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: auto;
+        }
+
+        .fullscreen-viewer img {
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            transform-origin: center center;
+            cursor: grab;
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 32px;
+            }
+
+            .subtitle {
+                font-size: 18px;
+            }
+
+            .container {
+                padding: 25px;
+            }
+
+            .menu-button,
+            .back-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <img src="微信图片_20260617232637_626_31.jpg" alt="椰椰电竞" class="bg-image">
+    <div class="container">
+        <div class="header">
+            <div class="title">椰椰电竞</div>
+            <div class="subtitle" id="pageTitle"></div>
+        </div>
+
+        <div class="button-list" id="buttonList"></div>
+        <div style="text-align: center;">
+            <button class="back-button" type="button" onclick="location.href='index.html'">返回首页</button>
+        </div>
+
+        <div class="footer">
+            <p>椰椰电竞 YEYE CLUB © 2025</p>
+            <p style="margin-top: 5px; color: #ffa500;">DELTA EXCLUSIVE PRICE LIST</p>
+        </div>
+    </div>
+
+    <div class="fullscreen-viewer" id="fullscreenViewer"></div>
+
+    <script>
+        const imageMenus = {
+            '基础单': [
+                'gameImg/基础单/微信图片_20260601164119.jpg',
+                'gameImg/基础单/微信图片_2026060116419.jpg'
+            ],
+            '女宝娱乐': [
+                'gameImg/女宝娱乐/微信图片_20260601164206.jpg',
+                'gameImg/女宝娱乐/微信图片_20260601164213.jpg'
+            ],
+            '趣味单1': [
+                'gameImg/趣味单1/微信图片_20260601164450.jpg',
+                'gameImg/趣味单1/微信图片_20260601164459.jpg',
+                'gameImg/趣味单1/微信图片_20260601164502.jpg',
+                'gameImg/趣味单1/微信图片_20260601164505.jpg',
+                'gameImg/趣味单1/微信图片_20260601164508.jpg',
+                'gameImg/趣味单1/微信图片_20260601164511.jpg',
+                'gameImg/趣味单1/微信图片_20260601164514.jpg',
+                'gameImg/趣味单1/微信图片_20260730163158_698_31.jpg'
+            ],
+            '趣味单2': [
+                'gameImg/趣味单2/微信图片_20260529114401_529_31.jpg',
+                'gameImg/趣味单2/微信图片_20260601164333.jpg',
+                'gameImg/趣味单2/微信图片_20260601164340.jpg',
+                'gameImg/趣味单2/微信图片_20260601164344.jpg',
+                'gameImg/趣味单2/微信图片_20260601164346.jpg',
+                'gameImg/趣味单2/微信图片_20260601164349.jpg',
+                'gameImg/趣味单2/微信图片_20260601164352.jpg',
+                'gameImg/趣味单2/微信图片_20260601164355.jpg',
+                'gameImg/趣味单2/微信图片_20260601164434.jpg',
+                'gameImg/趣味单2/微信图片_20260601164437.jpg'
+            ],
+            '趣味单3': [
+                'gameImg/趣味单3/微信图片_20260601164223.jpg',
+                'gameImg/趣味单3/微信图片_20260601164229.jpg',
+                'gameImg/趣味单3/微信图片_20260601164233.jpg',
+                'gameImg/趣味单3/微信图片_20260601164235.jpg',
+                'gameImg/趣味单3/微信图片_20260601164239.jpg',
+                'gameImg/趣味单3/微信图片_20260601164241.jpg',
+                'gameImg/趣味单3/微信图片_20260601164244.jpg',
+                'gameImg/趣味单3/微信图片_20260601164247.jpg',
+                'gameImg/趣味单3/微信图片_20260601164250.jpg',
+                'gameImg/趣味单3/微信图片_20260601164252.jpg',
+                'gameImg/趣味单3/微信图片_20260601164258.jpg',
+                'gameImg/趣味单3/微信图片_20260601164300.jpg',
+                'gameImg/趣味单3/微信图片_20260601164304.jpg',
+                'gameImg/趣味单3/微信图片_20260601164308.jpg',
+                'gameImg/趣味单3/微信图片_20260601164312.jpg',
+                'gameImg/趣味单3/微信图片_20260601164315.jpg'
+            ]
+        };
+
+        const params = new URLSearchParams(location.search);
+        const menuName = params.get('menu') || '基础单';
+        const images = imageMenus[menuName] || imageMenus['基础单'];
+        const buttonListEl = document.getElementById('buttonList');
+        const fullscreenViewerEl = document.getElementById('fullscreenViewer');
+        let currentScale = 1;
+
+        document.getElementById('pageTitle').textContent = menuName;
+
+        function closeViewer() {
+            fullscreenViewerEl.classList.remove('active');
+            fullscreenViewerEl.innerHTML = '';
+            currentScale = 1;
+        }
+
+        function updateImageScale(image) {
+            image.style.transform = `scale(${currentScale})`;
+        }
+
+        function changeScale(image, amount) {
+            currentScale = Math.min(4, Math.max(0.5, Number((currentScale + amount).toFixed(2))));
+            updateImageScale(image);
+        }
+
+        function openViewer(imagePath, alt) {
+            fullscreenViewerEl.innerHTML = '';
+            fullscreenViewerEl.classList.add('active');
+            currentScale = 1;
+
+            const toolbar = document.createElement('div');
+            toolbar.className = 'viewer-toolbar';
+
+            const zoomOutButton = document.createElement('button');
+            zoomOutButton.type = 'button';
+            zoomOutButton.className = 'viewer-button';
+            zoomOutButton.textContent = '-';
+
+            const zoomInButton = document.createElement('button');
+            zoomInButton.type = 'button';
+            zoomInButton.className = 'viewer-button';
+            zoomInButton.textContent = '+';
+
+            const closeButton = document.createElement('button');
+            closeButton.type = 'button';
+            closeButton.className = 'viewer-button';
+            closeButton.textContent = '×';
+
+            const stage = document.createElement('div');
+            stage.className = 'viewer-stage';
+
+            const image = document.createElement('img');
+            image.src = imagePath;
+            image.alt = alt;
+            image.title = '使用 + / - 放大缩小';
+
+            zoomOutButton.addEventListener('click', (event) => {
+                event.stopPropagation();
+                changeScale(image, -0.25);
+            });
+            zoomInButton.addEventListener('click', (event) => {
+                event.stopPropagation();
+                changeScale(image, 0.25);
+            });
+            closeButton.addEventListener('click', (event) => {
+                event.stopPropagation();
+                closeViewer();
+            });
+            stage.addEventListener('click', () => {
+                changeScale(image, currentScale < 1.75 ? 0.5 : -0.5);
+            });
+            image.addEventListener('click', (event) => {
+                event.stopPropagation();
+                changeScale(image, currentScale < 1.75 ? 0.5 : -0.5);
+            });
+
+            toolbar.appendChild(zoomOutButton);
+            toolbar.appendChild(zoomInButton);
+            toolbar.appendChild(closeButton);
+            stage.appendChild(image);
+            fullscreenViewerEl.appendChild(toolbar);
+            fullscreenViewerEl.appendChild(stage);
+        }
+
+        images.forEach((imagePath, index) => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'menu-button';
+            button.textContent = `${menuName}-${index + 1}`;
+            button.addEventListener('click', () => {
+                openViewer(imagePath, `${menuName}-${index + 1}`);
+            });
+            buttonListEl.appendChild(button);
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                closeViewer();
+            }
+        });
+    </script>
+</body>
+</html>
